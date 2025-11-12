@@ -1,10 +1,43 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Auth } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './Login.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login { }
+export class Login {
+  private auth = inject(Auth);
+  private router = inject(Router);
+
+  isSubmitting = signal(false);
+  errorMessage = signal('');
+
+  loginForm = new FormGroup({
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    password: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
+  });
+
+  async onSubmit() {
+    if (this.isSubmitting() || this.loginForm.invalid) return;
+    this.isSubmitting.set(true);
+    this.errorMessage.set('');
+
+    try {
+        const res: any = await this.auth.signIn(this.loginForm.value.email!, this.loginForm.value.password!);
+        if (res?.error) {
+          this.errorMessage.set(res.error.message || 'Error al iniciar sesión');
+      } else {
+        // Inicio de sesión correcto; navegar al dashboard (o ruta raíz)
+        await this.router.navigate(['/']);
+      }
+    } catch (e: any) {
+      this.errorMessage.set(e?.message || 'Error al iniciar sesión');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+}

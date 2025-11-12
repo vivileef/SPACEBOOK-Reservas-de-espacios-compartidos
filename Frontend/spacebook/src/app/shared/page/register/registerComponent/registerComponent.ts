@@ -19,6 +19,7 @@ export class RegisterComponent {
   
   registerForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
+    name: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
     password: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
   });
   
@@ -35,7 +36,8 @@ export class RegisterComponent {
     try {
       const response = await this.authService.signUp(
         this.registerForm.value.email!,
-        this.registerForm.value.password!
+        this.registerForm.value.password!,
+        { name: this.registerForm.value.name! }
       );
       
       if (response.error) {
