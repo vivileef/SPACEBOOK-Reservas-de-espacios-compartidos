@@ -34,22 +34,17 @@ export class RegisterComponent {
     this.errorMessage.set('');
     
     try {
-      const response = await this.authService.signUp(
+      await this.authService.signUp(
         this.registerForm.value.email!,
         this.registerForm.value.password!,
         { name: this.registerForm.value.name! }
       );
-      
-      if (response.error) {
-        this.errorMessage.set(response.error.message || 'Error al registrar usuario');
-        console.error('Error registering user:', response.error);
-      } else {
-        console.log('User registered successfully:', response);
-        // Esperar un poco antes de redirigir
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 500);
-      }
+
+      console.log('User registered successfully');
+      // Esperar un poco antes de redirigir
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 500);
     } catch (error: any) {
       console.error('Error registering user:', error);
       this.errorMessage.set(error.message || 'Error al registrar usuario');

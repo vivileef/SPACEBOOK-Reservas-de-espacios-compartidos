@@ -1,8 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { SupabaseClient,createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
-// Tipo para el perfil que almacenamos en la tabla `usuario`
 export interface UserProfile {
   id: string;
   email?: string | null;
@@ -14,104 +13,112 @@ export interface UserProfile {
   providedIn: 'root'
 })
 export class Auth {
-  private s_client: SupabaseClient;
-  // Señal pública que contiene el perfil del usuario autenticado (o null)
-  public currentUser: WritableSignal<UserProfile | null>;
+  private supabase: SupabaseClient;
+  // Señal con la sesión actual (null si no hay sesión)
+  public session: WritableSignal<Session | null>;
+  // Señal con el perfil del usuario autenticado (null si no existe)
+  public profile: WritableSignal<UserProfile | null>;
 
-  
-  constructor() { 
-  this.s_client = createClient(environment.apiUrl,environment.apiKey);
-  this.currentUser = signal<UserProfile | null>(null);
+  constructor() {
+    this.supabase = createClient(environment.apiUrl, environment.apiKey);
+    this.session = signal<Session | null>(null);
+    this.profile = signal<UserProfile | null>(null);
   }
-  // Definición del tipo de perfil que usamos en la tabla `usuario`
-  // (export no necesario dentro del servicio, pero lo definimos para tipado interno)
-  //regiter
-  // Contract for a user profile stored in the `usuario` table
 
-  /**
-   * Registra en Auth y crea/actualiza el perfil en la tabla `usuario`.
-   * profile puede contener atributos adicionales como name, role, etc.
-   */
+  // Registrar usuario
   async signUp(email: string, password: string, profile?: { name?: string; role?: string }) {
-    const { data, error } = await this.s_client.auth.signUp({
-      email,
-      password,
-    });
+    const { data, error } = await this.supabase.auth.signUp({ email, password });
+    if (error) throw error;
 
-    if (error) {
-      return { data, error };
-    }
+    // si se creó el usuario en Auth, intentamos crear/upsert el perfil en la tabla `usuario`
+    const userId = (data as any)?.user?.id ?? (data as any)?.user?.id;
+    if (userId) {
+      const profileRow: any = {
+        id: userId,
+        email,
+        name: profile?.name ?? null,
+        role: profile?.role ?? 'user',
+      };
 
-    // En v2, el usuario queda en data.user
-    const user = (data as any)?.user;
-
-    if (user) {
-      // Intentamos insertar el perfil en la tabla `usuario` usando el id del usuario de Auth.
-      // Si la fila ya existe, usamos upsert para actualizar.
-      try {
-        const profileRow: any = {
-          id: user.id,
-          email: user.email,
-          name: profile?.name ?? null,
-          role: profile?.role ?? 'user',
-        };
-
-        const insert = await this.s_client
-          .from('usuario')
-          .upsert(profileRow, { onConflict: 'id' });
-
-        // devolver tanto la respuesta de auth como la del insert para transparencia
-        return { data, profileInsert: insert, error: null };
-      } catch (e: any) {
-        // Si el insert falla, devolvemos el error pero dejamos el usuario creado en Auth.
-        return { data, error: e };
+      // upsert el perfil (crea o actualiza)
+      const res = await this.supabase.from('usuario').upsert(profileRow, { onConflict: 'id' });
+      if ((res as any).error) {
+        // no hacemos rollback del auth user, pero informamos del error
+        throw (res as any).error;
       }
+      // actualizar señal local
+      this.profile.set(profileRow as UserProfile);
     }
 
-    return { data, error: null };
+    return data;
   }
 
+  // Iniciar sesión
   async signIn(email: string, password: string) {
-    // Inicia sesión y devuelve la sesión/usuario. Además intenta cargar el perfil desde la tabla `usuario`
-    const res = await this.s_client.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    // Guardar sesión en la señal
+    this.session.set((data as any)?.session ?? null);
 
-    if (res.error) {
-      return res;
-    }
-
-    // Extraer user id (según la versión de supabase-js)
-    const userId = (res as any)?.data?.user?.id ?? (res as any)?.data?.session?.user?.id;
-
+    // cargar perfil desde tabla `usuario` si existe
+    const userId = (data as any)?.user?.id ?? (data as any)?.session?.user?.id;
     if (userId) {
       const profileRes = await this.getProfile(userId);
       if (!(profileRes as any).error) {
-  // Guardar el perfil en la señal para consumo por la app
-  this.currentUser.set((profileRes as any).data as UserProfile);
+        this.profile.set((profileRes as any).data as UserProfile);
       } else {
-        // Si no existe perfil en la tabla, establecer info mínima basada en auth
-        const authUser = (res as any)?.data?.user ?? (res as any)?.data?.session?.user;
-  this.currentUser.set({ id: userId, email: authUser?.email ?? null, name: null, role: 'user' });
+        // si no hay perfil, limpiar
+        this.profile.set(null);
       }
     }
-
-    return res;
+    return data;
   }
 
+  // Cerrar sesión
   async signOut() {
-    await this.s_client.auth.signOut();
-  this.currentUser.set(null);
+    const { error } = await this.supabase.auth.signOut();
+    if (error) throw error;
+    this.session.set(null);
   }
 
-  // Obtiene el perfil desde la tabla `usuario` por id
+  // Obtener sesión actual
+  async getSession(): Promise<Session | null> {
+    const { data } = await this.supabase.auth.getSession();
+    const s = (data as any).session ?? null;
+    this.session.set(s);
+    return s;
+  }
+
+  // Escuchar cambios de sesión (login/logout)
+  onAuthStateChange(callback: (event: AuthChangeEvent, session: Session | null) => void) {
+    return this.supabase.auth.onAuthStateChange((event, session) => {
+      // Actualizar señal local
+      this.session.set(session as Session | null);
+      // si hay sesión, intentar cargar perfil
+      const userId = (session as any)?.user?.id ?? null;
+      if (userId) {
+        this.getProfile(userId).then((r) => {
+          if (!(r as any).error) this.profile.set((r as any).data as UserProfile);
+        }).catch(() => this.profile.set(null));
+      } else {
+        this.profile.set(null);
+      }
+      callback(event, session as Session | null);
+    });
+  }
+
+  // Opcional: obtener access token actual
+  getAccessToken(): string | null {
+    return this.session()?.access_token ?? null;
+  }
+
+  // Obtener perfil desde la tabla `usuario`
   async getProfile(userId: string) {
-    return this.s_client.from('usuario').select('*').eq('id', userId).single();
+    return this.supabase.from('usuario').select('*').eq('id', userId).single();
   }
 
-  // Actualiza el perfil en la tabla `usuario`
-  async updateProfile(userId: string, attrs: Partial<{ name: string; role: string; email: string }>) {
-    return this.s_client.from('usuario').update(attrs).eq('id', userId);
+  // Actualizar perfil
+  async updateProfile(userId: string, attrs: Partial<UserProfile>) {
+    return this.supabase.from('usuario').update(attrs).eq('id', userId);
   }
 }
