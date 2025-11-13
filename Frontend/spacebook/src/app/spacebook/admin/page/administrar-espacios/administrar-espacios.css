@@ -1,0 +1,51 @@
+/* Estilos para estados de espacios */
+.estado-desocupado {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.estado-ocupado {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+/* Animaciones adicionales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 640px) {
+  .grid {
+    gap: 1rem;
+  }
+}
+
+/* Efecto hover para las cartillas */
+.group:hover {
+  transform: translateY(-2px);
+}
+
+/* Línea clamp para truncar texto */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+/* Estilos para el modal */
+.z-50 {
+  z-index: 50;
+}
