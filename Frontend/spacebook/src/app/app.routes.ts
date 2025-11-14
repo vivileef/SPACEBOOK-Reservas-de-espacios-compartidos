@@ -7,6 +7,7 @@ import { UserDashboardComponent } from './shared/page/user/user-dashboard.compon
 import { AdminHome } from './spacebook/admin/page/admin-home/admin-home';
 import { CalendarioDisponibilidad } from './spacebook/admin/page/calendario-disponibilidad/calendario-disponibilidad';
 import { AdministrarEspacios } from './spacebook/admin/page/administrar-espacios/administrar-espacios';
+import { VisualizacionDisponibilidadComponent } from './spacebook/admin/page/visualizacion-disponibilidad/visualizacion-disponibilidad';
 import { UserHome } from './spacebook/user/page/user-home/user-home';
 import { CatalogoEspacios } from './spacebook/user/page/catalogo-espacios/catalogo-espacios';
 import { SistemaReservas } from './spacebook/user/page/sistema-reservas/sistema-reservas';
@@ -14,7 +15,7 @@ import { SistemaReservas } from './spacebook/user/page/sistema-reservas/sistema-
 export const routes: Routes = [
     {
         path: '',
-        component: LoadingPage 
+        component: LoadingPage
     },
     {
         path: 'login',
@@ -39,6 +40,10 @@ export const routes: Routes = [
             {
                 path: 'administrar-espacios',
                 component: AdministrarEspacios
+            },
+            {
+                path: 'visualizacion-disponibilidad',
+                component: VisualizacionDisponibilidadComponent
             }
         ]
     },

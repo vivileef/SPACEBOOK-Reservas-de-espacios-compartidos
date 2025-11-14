@@ -1,0 +1,203 @@
+/* Animaciones suaves */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeInBg {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Estilos personalizados para la componente */
+
+/* Animación del modal */
+.fixed.inset-0.bg-black {
+  animation: fadeInBg 0.2s ease-out;
+}
+
+.fixed.inset-0.bg-black > div {
+  animation: slideInScale 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll smooth para la lista de espacios */
+.max-h-64 {
+  scrollbar-width: thin;
+  scrollbar-color: #dc2626 #f3f4f6;
+}
+
+.max-h-64::-webkit-scrollbar {
+  width: 8px;
+}
+
+.max-h-64::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.max-h-64::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 10px;
+}
+
+.max-h-64::-webkit-scrollbar-thumb:hover {
+  background: #991b1b;
+}
+
+/* Scroll para modal */
+.max-h-\[90vh\]::-webkit-scrollbar {
+  width: 6px;
+}
+
+.max-h-\[90vh\]::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.max-h-\[90vh\]::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 3px;
+}
+
+.max-h-\[90vh\]::-webkit-scrollbar-thumb:hover {
+  background: #991b1b;
+}
+
+/* Efectos hover en los botones del calendario */
+.grid.grid-cols-7:nth-child(n+3) > div:hover {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Estilos del evento en el calendario */
+.border-red-300 {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.border-green-300 {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Transición suave en las tarjetas */
+div[class*="rounded-lg"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto highlight en día actual */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.absolute.top-0.right-0 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mejora de accesibilidad - focus visible */
+button:focus-visible {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* Gradient suave para el header */
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, rgba(220, 38, 38, 1), rgba(229, 62, 62, 1));
+}
+
+.from-gray-50 {
+  background-image: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+/* Efecto glass morphism sutil */
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-xl {
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive mejorado */
+@media (max-width: 768px) {
+  .grid.grid-cols-7 {
+    gap: 0.25rem;
+  }
+
+  .min-h-24 {
+    min-height: auto;
+    padding: 0.5rem;
+  }
+
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+
+  .sticky.top-6 {
+    position: relative;
+    top: auto;
+  }
+
+  .max-w-md {
+    max-width: 90%;
+  }
+}
+
+/* Estilos específicos para mejor contraste */
+.border-l-4.border-red-700 {
+  border-left-width: 4px;
+}
+
+/* Estilos del formulario en el modal */
+select,
+input[type="text"],
+input[type="time"] {
+  transition: all 0.2s ease-out;
+}
+
+select:hover,
+input[type="text"]:hover,
+input[type="time"]:hover {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+select:focus,
+input[type="text"]:focus,
+input[type="time"]:focus {
+  border-color: #dc2626;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}

@@ -28,8 +28,8 @@ import { CommonModule } from '@angular/common';
 
         <!-- Navigation -->
         <nav class="flex-1 p-4 space-y-2">
-          <a 
-            routerLink="/admin-dashboard" 
+          <a
+            routerLink="/admin-dashboard"
             routerLinkActive="bg-red-600"
             [routerLinkActiveOptions]="{exact: true}"
             class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
@@ -40,8 +40,8 @@ import { CommonModule } from '@angular/common';
             <span class="font-medium">Dashboard</span>
           </a>
 
-          <a 
-            routerLink="/admin-dashboard/calendario" 
+          <a
+            routerLink="/admin-dashboard/calendario"
             routerLinkActive="bg-red-600"
             class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
           >
@@ -51,8 +51,8 @@ import { CommonModule } from '@angular/common';
             <span class="font-medium">Calendario</span>
           </a>
 
-          <a 
-            routerLink="/admin-dashboard/administrar-espacios" 
+          <a
+            routerLink="/admin-dashboard/administrar-espacios"
             routerLinkActive="bg-red-600"
             class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
           >
@@ -60,6 +60,17 @@ import { CommonModule } from '@angular/common';
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
             </svg>
             <span class="font-medium">Administrar Espacios</span>
+          </a>
+
+          <a
+            routerLink="/admin-dashboard/visualizacion-disponibilidad"
+            routerLinkActive="bg-red-600"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span class="font-medium">Disponibilidad</span>
           </a>
         </nav>
 
@@ -76,7 +87,7 @@ import { CommonModule } from '@angular/common';
               </div>
             </div>
           }
-          <button 
+          <button
             (click)="logout()"
             class="w-full px-4 py-2 bg-red-800 hover:bg-red-900 rounded-lg transition-colors text-sm font-medium flex items-center justify-center space-x-2"
           >
@@ -110,7 +121,7 @@ import { CommonModule } from '@angular/common';
 export class AdminDashboardComponent implements OnInit {
   private auth = inject(Auth);
   private router = inject(Router);
-  
+
   userProfile = this.auth.profile;
 
   ngOnInit() {
