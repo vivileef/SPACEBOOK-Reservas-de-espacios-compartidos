@@ -1,4 +1,46 @@
-<div class="bg-white rounded-xl shadow-md p-8">
-  <h2 class="text-2xl font-bold text-gray-900 mb-4">📚 Catálogo de Espacios</h2>
-  <p class="text-gray-600">Catálogo de Espacios Working - User Component</p>
-</div>
+<section class="catalog-root">
+  <header class="catalog-header">
+    <h2 class="catalog-title">Catálogo de Espacios</h2>
+    <p class="catalog-sub">Espacios disponibles con fotos y capacidad</p>
+  </header>
+
+  <div class="catalog-controls">
+    <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtro" class="search-input" />
+  </div>
+
+  <div class="catalog-grid">
+    <article *ngFor="let esp of filteredEspacios()" class="catalog-card" [class.disabled]="!esp.disponible">
+      <div class="img-wrap">
+        <img [src]="esp.imagen" [alt]="esp.nombre" class="catalog-img" />
+        <span class="badge-cap">{{ esp.capacidad }} pax</span>
+      </div>
+
+      <div class="card-body">
+        <h3 class="card-title">{{ esp.nombre }}</h3>
+        <p class="card-desc">{{ esp.descripcion }}</p>
+        <div class="card-actions">
+          <button class="btn-primary" (click)="verDetalle(esp)">Ver</button>
+          <button class="btn-outline" [disabled]="!esp.disponible" (click)="reservar(esp)">Reservar</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- Modal de detalle -->
+  <div class="modal" *ngIf="modalOpen">
+    <div class="modal-backdrop" (click)="closeModal()"></div>
+    <div class="modal-content">
+      <button class="modal-close" (click)="closeModal()">✕</button>
+      <div class="modal-body">
+        <img [src]="modalEsp?.imagen" [alt]="modalEsp?.nombre" class="modal-img" />
+        <h3 class="modal-title">{{ modalEsp?.nombre }}</h3>
+        <p class="modal-desc">{{ modalEsp?.descripcion }}</p>
+        <p class="modal-meta"><strong>Capacidad:</strong> {{ modalEsp?.capacidad }} pax</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" (click)="reservar(modalEsp!)" [disabled]="!modalEsp?.disponible">Reservar</button>
+        <button class="btn-outline" (click)="closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</section>
