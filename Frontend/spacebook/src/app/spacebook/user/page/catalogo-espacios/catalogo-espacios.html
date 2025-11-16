@@ -5,22 +5,41 @@
   </header>
 
   <div class="catalog-controls">
-    <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtro" class="search-input" />
+    <div class="left-controls">
+      <input type="text" placeholder="Buscar por nombre o descripción..." [(ngModel)]="filtro" (input)="onFiltroInput()" class="search-input" aria-label="Buscar espacios" />
+      <input type="number" min="0" placeholder="Capacidad mínima" [(ngModel)]="minCapacidad" class="cap-input" aria-label="Capacidad mínima" />
+      <label class="chk"><input type="checkbox" [(ngModel)]="onlyDisponibles" /> Sólo disponibles</label>
+    </div>
+    <div class="right-controls">
+      <select [(ngModel)]="sortBy" aria-label="Ordenar">
+        <option value="relevance">Orden: Relevancia</option>
+        <option value="capacidad-desc">Capacidad (mayor)</option>
+        <option value="capacidad-asc">Capacidad (menor)</option>
+      </select>
+    </div>
   </div>
 
-  <div class="catalog-grid">
-    <article *ngFor="let esp of filteredEspacios()" class="catalog-card" [class.disabled]="!esp.disponible">
+  <div *ngIf="loading" class="catalog-grid">
+    <article class="catalog-card skeleton" *ngFor="let n of [1,2,3,4]"></article>
+  </div>
+
+  <div class="catalog-grid" *ngIf="!loading">
+    <article *ngFor="let esp of filteredEspacios()" class="catalog-card" [class.disabled]="!esp.disponible" role="article" aria-labelledby="title-{{esp.id}}">
       <div class="img-wrap">
-        <img [src]="esp.imagen" [alt]="esp.nombre" class="catalog-img" />
+        <picture>
+          <source type="image/webp" [srcset]="esp.imagen.replace('.svg','.webp')" />
+          <img [src]="esp.imagen" [alt]="esp.nombre" class="catalog-img" loading="lazy" />
+        </picture>
         <span class="badge-cap">{{ esp.capacidad }} pax</span>
+        <span class="badge-state" [class.off]="!esp.disponible">{{ esp.disponible ? 'Disponible' : 'No disponible' }}</span>
       </div>
 
       <div class="card-body">
-        <h3 class="card-title">{{ esp.nombre }}</h3>
+        <h3 id="title-{{esp.id}}" class="card-title">{{ esp.nombre }}</h3>
         <p class="card-desc">{{ esp.descripcion }}</p>
         <div class="card-actions">
-          <button class="btn-primary" (click)="verDetalle(esp)">Ver</button>
-          <button class="btn-outline" [disabled]="!esp.disponible" (click)="reservar(esp)">Reservar</button>
+          <button class="btn-primary" (click)="verDetalle(esp)" aria-label="Ver {{esp.nombre}}">Ver</button>
+          <button class="btn-outline" [disabled]="!esp.disponible" (click)="reservar(esp)" [attr.aria-disabled]="!esp.disponible">Reservar</button>
         </div>
       </div>
     </article>
@@ -29,8 +48,8 @@
   <!-- Modal de detalle -->
   <div class="modal" *ngIf="modalOpen">
     <div class="modal-backdrop" (click)="closeModal()"></div>
-    <div class="modal-content">
-      <button class="modal-close" (click)="closeModal()">✕</button>
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <button class="modal-close" (click)="closeModal()" aria-label="Cerrar">✕</button>
       <div class="modal-body">
         <img [src]="modalEsp?.imagen" [alt]="modalEsp?.nombre" class="modal-img" />
         <h3 class="modal-title">{{ modalEsp?.nombre }}</h3>
