@@ -31,6 +31,17 @@ interface Espacio {
   nombre: string;
   estado: boolean;
   seccionid: string;
+  horalimite?: number; // en minutos
+}
+
+interface EspacioHora {
+  espaciohoraid?: string;
+  nombre: string;
+  horainicio: string; // time format HH:MM:SS
+  horafin: string; // time format HH:MM:SS
+  espacioid: string;
+  reservaid?: string | null; // Puede ser string, null o undefined
+  estado?: boolean; // true = disponible, false = ocupado
 }
 
 interface Horario {
@@ -97,8 +108,15 @@ export class AdministrarEspacios implements OnInit {
   modoEspacio = signal<ModoEdicion>('crear');
   espacioForm = signal<Partial<Espacio>>({
     nombre: '',
-    estado: true
+    estado: true,
+    horalimite: 60 // default: 60 minutos (1 hora)
   });
+
+  // Modal para ver espaciohora
+  mostrarModalEspacioHora = signal<boolean>(false);
+  espaciosHora = signal<EspacioHora[]>([]);
+  espacioSeleccionadoHora = signal<Espacio | null>(null);
+  cargandoEspacioHora = signal<boolean>(false);
   
   // Estados generales
   cargando = signal<boolean>(false);
@@ -663,7 +681,8 @@ export class AdministrarEspacios implements OnInit {
     } else {
       this.espacioForm.set({
         nombre: '',
-        estado: true
+        estado: true,
+        horalimite: 60
       });
     }
     this.mostrarModalEspacio.set(true);
@@ -674,7 +693,8 @@ export class AdministrarEspacios implements OnInit {
     this.mostrarModalEspacio.set(false);
     this.espacioForm.set({
       nombre: '',
-      estado: true
+      estado: true,
+      horalimite: 60
     });
   }
 
@@ -692,21 +712,71 @@ export class AdministrarEspacios implements OnInit {
       return;
     }
 
+    if (!form.horalimite || form.horalimite <= 0) {
+      this.error.set('La hora límite debe ser mayor a 0 minutos');
+      return;
+    }
+
     try {
       this.cargando.set(true);
       this.error.set('');
 
       if (this.modoEspacio() === 'crear') {
-        const { error } = await this.supabase
+        console.log('=== CREANDO ESPACIO ==="');
+        console.log('Datos del formulario:', form);
+        console.log('Sección seleccionada:', seccion);
+
+        // Insertar el espacio
+        const { data: espacioData, error: espacioError } = await this.supabase
           .from('espacio')
           .insert([{
             nombre: form.nombre,
             estado: form.estado ?? true,
-            seccionid: seccion.seccionid
-          }]);
+            seccionid: seccion.seccionid,
+            horalimite: form.horalimite
+          }])
+          .select()
+          .single();
 
-        if (error) throw error;
-        this.mensajeExito.set('Espacio creado exitosamente');
+        if (espacioError) {
+          console.error('Error al insertar espacio:', espacioError);
+          throw espacioError;
+        }
+
+        console.log('Espacio creado:', espacioData);
+
+        // Obtener el horario de la institución para generar espaciohora
+        const horarioInstitucion = await this.obtenerHorarioInstitucion(seccion.institucionid);
+        
+        console.log('Horario de institución:', horarioInstitucion);
+
+        if (horarioInstitucion && espacioData) {
+          const espaciosHora = this.generarEspaciosHora(
+            espacioData.espacioid,
+            horarioInstitucion.horainicio,
+            horarioInstitucion.horafin,
+            form.horalimite!
+          );
+
+          console.log(`Generados ${espaciosHora.length} bloques horarios:`, espaciosHora);
+
+          // Insertar todos los espaciohora
+          const { data: espacioHoraData, error: espacioHoraError } = await this.supabase
+            .from('espaciohora')
+            .insert(espaciosHora)
+            .select();
+
+          if (espacioHoraError) {
+            console.error('Error al crear espaciohora:', espacioHoraError);
+            this.error.set('Espacio creado pero error al generar bloques horarios');
+          } else {
+            console.log('EspacioHora insertados exitosamente:', espacioHoraData);
+            this.mensajeExito.set(`Espacio creado exitosamente con ${espaciosHora.length} bloques horarios`);
+          }
+        } else {
+          console.warn('No se pudo obtener horario de institución o no hay espacio data');
+          this.mensajeExito.set('Espacio creado exitosamente (sin horario de institución)');
+        }
       } else {
         if (!form.espacioid) return;
 
@@ -714,11 +784,37 @@ export class AdministrarEspacios implements OnInit {
           .from('espacio')
           .update({
             nombre: form.nombre,
-            estado: form.estado ?? true
+            estado: form.estado ?? true,
+            horalimite: form.horalimite
           })
           .eq('espacioid', form.espacioid);
 
         if (error) throw error;
+        
+        // Al editar, regenerar espaciohora si cambió horalimite
+        const horarioInstitucion = await this.obtenerHorarioInstitucion(seccion.institucionid);
+        
+        if (horarioInstitucion) {
+          // Eliminar espaciohora existentes sin reserva
+          await this.supabase
+            .from('espaciohora')
+            .delete()
+            .eq('espacioid', form.espacioid)
+            .is('reservaid', null);
+
+          // Generar nuevos espaciohora
+          const espaciosHora = this.generarEspaciosHora(
+            form.espacioid,
+            horarioInstitucion.horainicio,
+            horarioInstitucion.horafin,
+            form.horalimite!
+          );
+
+          await this.supabase
+            .from('espaciohora')
+            .insert(espaciosHora);
+        }
+
         this.mensajeExito.set('Espacio actualizado exitosamente');
       }
 
@@ -735,6 +831,102 @@ export class AdministrarEspacios implements OnInit {
     } finally {
       this.cargando.set(false);
     }
+  }
+
+  // Método auxiliar para obtener el horario de la institución
+  async obtenerHorarioInstitucion(institucionId: string): Promise<Horario | null> {
+    try {
+      // Primero obtener la institución para conseguir su horarioid
+      const { data: institucionData, error: institucionError } = await this.supabase
+        .from('institucion')
+        .select('horarioid')
+        .eq('institucionid', institucionId)
+        .single();
+
+      if (institucionError || !institucionData?.horarioid) {
+        console.warn('Institución sin horario configurado');
+        return null;
+      }
+
+      // Obtener el horario
+      const { data: horarioData, error: horarioError } = await this.supabase
+        .from('horario')
+        .select('*')
+        .eq('horarioid', institucionData.horarioid)
+        .single();
+
+      if (horarioError) throw horarioError;
+
+      return horarioData;
+    } catch (error) {
+      console.error('Error al obtener horario de institución:', error);
+      return null;
+    }
+  }
+
+  // Método para generar los bloques de espaciohora
+  generarEspaciosHora(
+    espacioId: string,
+    horaInicio: string, // formato HH:MM:SS
+    horaFin: string,    // formato HH:MM:SS
+    horaLimiteMinutos: number
+  ): Partial<EspacioHora>[] {
+    console.log('=== GENERANDO ESPACIOHORA ===');
+    console.log('Espacio ID:', espacioId);
+    console.log('Hora Inicio:', horaInicio);
+    console.log('Hora Fin:', horaFin);
+    console.log('Hora Límite (min):', horaLimiteMinutos);
+
+    const espaciosHora: Partial<EspacioHora>[] = [];
+
+    // Convertir strings de tiempo a minutos desde medianoche
+    const convertirAMinutos = (tiempo: string): number => {
+      const partes = tiempo.split(':');
+      const horas = parseInt(partes[0], 10);
+      const minutos = parseInt(partes[1], 10);
+      console.log(`Convirtiendo ${tiempo}: ${horas}h ${minutos}m = ${horas * 60 + minutos} minutos totales`);
+      return horas * 60 + minutos;
+    };
+
+    // Convertir minutos a formato HH:MM:SS
+    const convertirAFormato = (minutos: number): string => {
+      const horas = Math.floor(minutos / 60);
+      const mins = minutos % 60;
+      return `${String(horas).padStart(2, '0')}:${String(mins).padStart(2, '0')}:00`;
+    };
+
+    const minutosInicio = convertirAMinutos(horaInicio);
+    const minutosFin = convertirAMinutos(horaFin);
+
+    console.log(`Rango: ${minutosInicio} a ${minutosFin} minutos`);
+    console.log(`Total de minutos disponibles: ${minutosFin - minutosInicio}`);
+    console.log(`Bloques esperados: ${Math.floor((minutosFin - minutosInicio) / horaLimiteMinutos)}`);
+
+    let minutosActuales = minutosInicio;
+    let contador = 1;
+
+    while (minutosActuales + horaLimiteMinutos <= minutosFin) {
+      const horaInicioBloque = convertirAFormato(minutosActuales);
+      const horaFinBloque = convertirAFormato(minutosActuales + horaLimiteMinutos);
+
+      const bloque = {
+        nombre: `Bloque ${contador}`,
+        horainicio: horaInicioBloque,
+        horafin: horaFinBloque,
+        espacioid: espacioId,
+        reservaid: null, // Explícitamente null para evitar que use el default de la DB
+        estado: true // true = disponible por defecto
+      };
+
+      console.log(`Bloque ${contador}:`, bloque);
+      espaciosHora.push(bloque);
+
+      minutosActuales += horaLimiteMinutos;
+      contador++;
+    }
+
+    console.log(`Total de bloques generados: ${espaciosHora.length}`);
+    return espaciosHora;
   }
 
   async eliminarEspacio(espacio: Espacio) {
@@ -880,6 +1072,107 @@ export class AdministrarEspacios implements OnInit {
 
   actualizarEspacioEstado(value: boolean) {
     this.espacioForm.set({ ...this.espacioForm(), estado: value });
+  }
+
+  actualizarEspacioHoraLimite(value: number) {
+    this.espacioForm.set({ ...this.espacioForm(), horalimite: value });
+  }
+
+  // ==================== GESTIÓN DE ESPACIOHORA ====================
+  async abrirModalEspacioHora(espacio: Espacio) {
+    this.espacioSeleccionadoHora.set(espacio);
+    this.mostrarModalEspacioHora.set(true);
+    await this.cargarEspaciosHora(espacio.espacioid);
+  }
+
+  async cargarEspaciosHora(espacioId: string) {
+    try {
+      this.cargandoEspacioHora.set(true);
+      
+      const { data, error } = await this.supabase
+        .from('espaciohora')
+        .select('*')
+        .eq('espacioid', espacioId)
+        .order('horainicio', { ascending: true });
+
+      if (error) throw error;
+
+      this.espaciosHora.set(data || []);
+      console.log(`Cargados ${data?.length || 0} espaciohora para el espacio:`, data);
+    } catch (error: any) {
+      console.error('Error al cargar espaciohora:', error);
+      this.error.set('Error al cargar los bloques horarios');
+    } finally {
+      this.cargandoEspacioHora.set(false);
+    }
+  }
+
+  cerrarModalEspacioHora() {
+    this.mostrarModalEspacioHora.set(false);
+    this.espacioSeleccionadoHora.set(null);
+    this.espaciosHora.set([]);
+  }
+
+  formatearHora(hora: string): string {
+    if (!hora) return '--:--';
+    return hora.substring(0, 5); // De HH:MM:SS a HH:MM
+  }
+
+  async regenerarEspaciosHora(espacio: Espacio) {
+    if (!confirm(`¿Deseas regenerar los bloques horarios de "${espacio.nombre}"? Esto eliminará los bloques sin reserva.`)) {
+      return;
+    }
+
+    try {
+      this.cargandoEspacioHora.set(true);
+      const seccion = this.seccionSeleccionada();
+      
+      if (!seccion) {
+        this.error.set('No se encontró la sección');
+        return;
+      }
+
+      const horarioInstitucion = await this.obtenerHorarioInstitucion(seccion.institucionid);
+      
+      if (!horarioInstitucion) {
+        this.error.set('La institución no tiene horario configurado');
+        return;
+      }
+
+      // Eliminar espaciohora existentes sin reserva
+      await this.supabase
+        .from('espaciohora')
+        .delete()
+        .eq('espacioid', espacio.espacioid)
+        .is('reservaid', null);
+
+      // Generar nuevos espaciohora
+      const espaciosHora = this.generarEspaciosHora(
+        espacio.espacioid,
+        horarioInstitucion.horainicio,
+        horarioInstitucion.horafin,
+        espacio.horalimite || 60
+      );
+
+      const { error } = await this.supabase
+        .from('espaciohora')
+        .insert(espaciosHora);
+
+      if (error) throw error;
+
+      this.mensajeExito.set(`Se regeneraron ${espaciosHora.length} bloques horarios`);
+      await this.cargarEspaciosHora(espacio.espacioid);
+
+      setTimeout(() => {
+        this.mensajeExito.set('');
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('Error al regenerar espaciohora:', error);
+      this.error.set('Error al regenerar bloques horarios');
+    } finally {
+      this.cargandoEspacioHora.set(false);
+    }
   }
 
   limpiarMensajes() {
