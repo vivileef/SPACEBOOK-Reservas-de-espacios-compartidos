@@ -37,7 +37,6 @@ Breve visión general:
 
 ## Modelo de datos (ER)
 
-El modelo simplificado (usa Mermaid para renderizar):
 
 ```mermaid
 erDiagram
