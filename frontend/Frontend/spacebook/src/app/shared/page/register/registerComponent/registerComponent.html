@@ -1,0 +1,180 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-12">
+  <div class="max-w-2xl w-full space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="flex justify-center mb-6">
+        <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center">
+          <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-900 mb-2">Crear Cuenta en SpaceBook</h2>
+      <p class="text-gray-600">Completa el formulario para comenzar a reservar espacios</p>
+    </div>
+
+    <!-- Register Form -->
+    <div class="bg-white shadow-xl rounded-2xl p-8">
+      <!-- Mensaje de Error -->
+      @if (errorMessage()) {
+        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-sm text-red-600">{{ errorMessage() }}</p>
+        </div>
+      }
+
+      <form class="space-y-5" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Grid para campos en dos columnas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Nombre -->
+          <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">
+              Nombre <span class="text-red-500">*</span>
+            </label>
+            <input
+              formControlName="nombre" 
+              id="nombre"
+              type="text" 
+              name="nombre"
+              class="text-gray-600 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+              placeholder="Juan" 
+            />
+            @if (registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched) {
+              <p class="text-xs text-red-500 mt-1">El nombre es requerido</p>
+            }
+          </div>
+
+          <!-- Apellido -->
+          <div>
+            <label for="apellido" class="block text-sm font-medium text-gray-700 mb-2">
+              Apellido <span class="text-red-500">*</span>
+            </label>
+            <input
+              formControlName="apellido" 
+              id="apellido"
+              type="text" 
+              name="apellido"
+              class="text-gray-600 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+              placeholder="Pérez" 
+            />
+            @if (registerForm.get('apellido')?.invalid && registerForm.get('apellido')?.touched) {
+              <p class="text-xs text-red-500 mt-1">El apellido es requerido</p>
+            }
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="correo" class="block text-sm font-medium text-gray-700 mb-2">
+            Correo Electrónico <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="correo" 
+            id="correo"
+            type="email" 
+            name="correo"
+            class="text-gray-600 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+            placeholder="juan.perez@universidad.edu" 
+          />
+          @if (registerForm.get('correo')?.invalid && registerForm.get('correo')?.touched) {
+            <p class="text-xs text-red-500 mt-1">Ingrese un correo válido</p>
+          }
+        </div>
+
+        <!-- Grid para Cédula y Teléfono -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Cédula -->
+          <div>
+            <label for="cedula" class="block text-sm font-medium text-gray-700 mb-2">
+              Cédula <span class="text-red-500">*</span>
+            </label>
+            <input
+              formControlName="cedula" 
+              id="cedula"
+              type="number" 
+              name="cedula"
+              class="text-gray-600 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+              placeholder="1234567890" 
+            />
+            @if (registerForm.get('cedula')?.invalid && registerForm.get('cedula')?.touched) {
+              <p class="text-xs text-red-500 mt-1">La cédula es requerida</p>
+            }
+          </div>
+
+          <!-- Teléfono -->
+          <div>
+            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">
+              Teléfono <span class="text-red-500">*</span>
+            </label>
+            <input
+              formControlName="telefono" 
+              id="telefono"
+              type="number" 
+              name="telefono"
+              class="text-gray-600 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+              placeholder="0987654321" 
+            />
+            @if (registerForm.get('telefono')?.invalid && registerForm.get('telefono')?.touched) {
+              <p class="text-xs text-red-500 mt-1">El teléfono es requerido</p>
+            }
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div>
+          <label for="contrasena" class="block text-sm font-medium text-gray-700 mb-2">
+            Contraseña (mínimo 6 caracteres) <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="contrasena" 
+            id="contrasena"
+            type="password" 
+            name="contrasena"
+            class="text-gray-600 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+            placeholder="••••••••" 
+          />
+          @if (registerForm.get('contrasena')?.invalid && registerForm.get('contrasena')?.touched) {
+            <p class="text-xs text-red-500 mt-1">La contraseña debe tener al menos 6 caracteres</p>
+          }
+        </div>
+
+        <!-- Términos y Condiciones -->
+        <div class="flex items-start">
+          <input 
+            id="terms" 
+            type="checkbox" 
+            class="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
+          />
+          <label for="terms" class="ml-3 text-sm text-gray-600">
+            Acepto los 
+            <a href="/terms" class="text-blue-600 hover:text-blue-700 font-medium">Términos y Condiciones</a> 
+            y la 
+            <a href="/privacy" class="text-blue-600 hover:text-blue-700 font-medium">Política de Privacidad</a>
+          </label>
+        </div>
+
+        <!-- Register Button -->
+        <button 
+          type="submit"
+          [disabled]="isSubmitting() || registerForm.invalid"
+          [class.opacity-50]="isSubmitting() || registerForm.invalid"
+          [class.cursor-not-allowed]="isSubmitting() || registerForm.invalid"
+          class="w-full bg-blue-600 hover:bg-blue-700 disabled:hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+        >
+          {{ isSubmitting() ? '⏳ Creando cuenta...' : 'Crear Cuenta' }}
+        </button>
+
+        <!-- Login Link -->
+        <div class="text-center pt-4">
+          <p class="text-sm text-gray-600">
+            ¿Ya tienes una cuenta? 
+            <a routerLink="/login" class="text-blue-600 hover:text-blue-700 font-semibold">
+              Inicia sesión aquí
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

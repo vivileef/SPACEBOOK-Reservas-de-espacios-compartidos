@@ -1,0 +1,129 @@
+<div class="min-h-screen bg-gray-50 py-4 sm:py-8">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Calificar Reserva</h1>
+      <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Comparte tu experiencia y ayuda a otros usuarios</p>
+    </div>
+
+    <!-- Success Message -->
+    @if (exito()) {
+      <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
+        <div class="flex items-center">
+          <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          ¡Comentario enviado exitosamente! Redirigiendo...
+        </div>
+      </div>
+    }
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Form -->
+    @if (!exito()) {
+      <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+        <!-- Star Rating -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Calificación <span class="text-red-500">*</span>
+          </label>
+          <div class="flex gap-2">
+            @for (estrella of [1, 2, 3, 4, 5]; track estrella) {
+              <button
+                type="button"
+                (click)="seleccionarCalificacion(estrella)"
+                [class]="'text-3xl transition-colors ' + (estrella <= calificacion() ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-200')">
+                @if (estrella <= calificacion()) {
+                  ★
+                } @else {
+                  ☆
+                }
+              </button>
+            }
+          </div>
+          @if (calificacion() > 0) {
+            <p class="mt-2 text-sm text-gray-600">
+              {{ calificacion() }} de 5 estrellas
+            </p>
+          }
+        </div>
+
+        <!-- Comment Text -->
+        <div class="mb-6">
+          <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-2">
+            Comentario <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            id="descripcion"
+            [(ngModel)]="descripcion"
+            rows="5"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Cuéntanos sobre tu experiencia..."
+            [disabled]="enviando()">
+          </textarea>
+          <p class="mt-1 text-sm text-gray-500">
+            Mínimo 10 caracteres. Actualmente: {{ descripcion().length }}
+          </p>
+        </div>
+
+        <!-- Reservation Info -->
+        @if (reserva()) {
+          <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+            <h3 class="text-sm font-medium text-gray-700 mb-2">Información de la Reserva</h3>
+            <div class="text-sm text-gray-600">
+              <p><strong>Fecha:</strong> {{ formatearFecha(reserva()!.fechareserva) }}</p>
+              <p><strong>Reserva:</strong> {{ reserva()!.nombrereserva }}</p>
+            </div>
+          </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+          <button
+            type="button"
+            (click)="enviarComentario()"
+            [disabled]="enviando() || calificacion() === 0 || descripcion().length < 10"
+            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors">
+            @if (enviando()) {
+              <span class="flex items-center justify-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Enviando...
+              </span>
+            } @else {
+              Enviar Comentario
+            }
+          </button>
+          <button
+            type="button"
+            (click)="cancelar()"
+            [disabled]="enviando()"
+            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Tips -->
+    @if (!exito()) {
+      <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 class="text-sm font-medium text-blue-900 mb-2">💡 Consejos para un buen comentario</h3>
+        <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
+          <li>Sé específico sobre tu experiencia</li>
+          <li>Menciona aspectos positivos y áreas de mejora</li>
+          <li>Sé respetuoso y constructivo</li>
+          <li>Ayuda a otros usuarios con tu opinión honesta</li>
+        </ul>
+      </div>
+    }
+  </div>
+</div>

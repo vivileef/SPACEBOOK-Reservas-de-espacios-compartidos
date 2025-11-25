@@ -1,0 +1,86 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="flex justify-center mb-6">
+        <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center">
+          <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido a SpaceBook</h2>
+      <p class="text-gray-600">Inicia sesión para reservar espacios</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="bg-white shadow-xl rounded-2xl p-8 space-y-6">
+      <!-- Mensaje de error -->
+      @if (errorMessage()) {
+        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-sm text-red-600">{{ errorMessage() }}</p>
+        </div>
+      }
+
+      <form class="space-y-5" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="space-y-5">
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-sm font-medium  mb-2 text-gray-900">
+              Correo Electrónico
+            </label>
+            <input 
+              id="email"
+              formControlName="email"
+              type="email" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none  text-gray-900" 
+              placeholder="tu@email.com" 
+            />
+          </div>
+
+          <!-- Password Field -->
+          <div>
+            <label for="password" class="text-gray-900 block text-sm font-medium  mb-2">
+              Contraseña
+            </label>
+            <input 
+              id="password"
+              formControlName="password"
+              type="password" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-gray-900" 
+              placeholder="••••••••" 
+            />
+          </div>
+
+          <!-- Remember & Forgot -->
+          <div class="flex items-center justify-between">
+            <label class="flex items-center">
+              <input type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+              <span class="ml-2 text-sm text-gray-600">Recordarme</span>
+            </label>
+            <a href="/forgot-password" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit" [disabled]="isSubmitting() || loginForm.invalid" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+          {{ isSubmitting() ? '⏳ Iniciando sesión...' : 'Iniciar Sesión' }}
+        </button>
+
+      </form>
+
+      <!-- Sign Up Link -->
+      <div class="text-center pt-4">
+        <p class="text-sm text-gray-600">
+          ¿No tienes una cuenta? 
+          <a routerLink="/register" class="text-blue-600 hover:text-blue-700 font-semibold">
+            Regístrate aquí
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,498 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6">
+  <!-- Contenedor Principal -->
+  <div class="max-w-7xl mx-auto">
+    <!-- Header con Título -->
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Disponibilidad de Espacios</h1>
+      <p class="text-gray-600 text-sm sm:text-base lg:text-lg">Visualización general de horarios y reservas en formato calendario</p>
+    </div>
+
+    <!-- Contenedor Principal - Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+
+      <!-- Columna Principal (Calendario) -->
+      <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+
+        <!-- Card: Selector de Institución -->
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-red-700 hover:shadow-lg transition-shadow duration-300">
+          <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">Institución</label>
+          <div class="space-y-2">
+            <button
+              *ngFor="let institution of institutions"
+              (click)="selectInstitution(institution)"
+              [ngClass]="{
+                'bg-red-700 text-white border-red-700': selectedInstitution === institution.name,
+                'bg-white text-gray-700 border-gray-300 hover:border-red-400 hover:bg-red-50': selectedInstitution !== institution.name
+              }"
+              class="w-full px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium border-2 rounded-lg transition-all duration-200 flex items-center space-x-2 sm:space-x-3">
+            >
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+              </svg>
+              <div class="flex-1 text-left">
+                <p class="font-semibold">{{ institution.name }}</p>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full" [ngClass]="selectedInstitution === institution.name ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'">
+                {{ institution.sections.length }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card: Selector de Sección y Espacio -->
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-red-700 hover:shadow-lg transition-shadow duration-300">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+            <!-- Selector de Sección -->
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7a7 7 0 110 14A7 7 0 017 7z"/>
+                </svg>
+                Secciones
+              </label>
+              <div class="space-y-2">
+                <button
+                  *ngFor="let section of sections"
+                  (click)="selectSection(section)"
+                  [ngClass]="{
+                  'bg-red-700 text-white border-red-700': selectedSection === section.name,
+                  'bg-white text-gray-700 border-gray-300 hover:border-red-400 hover:bg-red-50': selectedSection !== section.name
+                }"
+                class="w-full px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium border-2 rounded-lg transition-all duration-200 flex items-center justify-between">
+                >
+                  <span>{{ section.name }}</span>
+                  <span class="text-xs px-2 py-1 rounded-full" [ngClass]="selectedSection === section.name ? 'bg-red-600' : 'bg-gray-200'">
+                    {{ section.count }}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Selector de Espacio -->
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5.581m0 0H9m0 0h5.581m0 0a2.121 2.121 0 01-3.75 1.818M9 21a2.121 2.121 0 013.75-1.818M9 7h6m0 0a1 1 0 11-2 0m2 0a1 1 0 10-2 0"/>
+                </svg>
+                Espacios
+              </label>
+              <div class="space-y-2 max-h-64 overflow-y-auto">
+                <button
+                  *ngFor="let space of spaces"
+                  (click)="selectSpace(space)"
+                  [ngClass]="{
+                    'bg-red-700 text-white border-red-700': selectedSpace === space.name,
+                    'bg-white text-gray-700 border-gray-300 hover:border-red-400 hover:bg-red-50': selectedSpace !== space.name
+                  }"
+                  class="w-full px-4 py-3 text-left text-sm font-medium border-2 rounded-lg transition-all duration-200"
+                >
+                  <p class="font-semibold">{{ space.name }}</p>
+                  <p class="text-xs mt-1" [ngClass]="selectedSpace === space.name ? 'text-red-100' : 'text-gray-500'">
+                    Bloques horarios: {{ space.capacity }}
+                  </p>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Calendario -->
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8 border-l-4 border-red-700 hover:shadow-lg transition-shadow duration-300">
+
+          <!-- Encabezado del Calendario -->
+          <div class="flex items-center justify-between mb-4 sm:mb-6">
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
+                {{ monthNames[currentDate.getMonth()] }}
+              </h2>
+              <p class="text-xs sm:text-sm text-gray-600">{{ currentDate.getFullYear() }}</p>
+            </div>
+            <div class="flex space-x-1 sm:space-x-2">
+              <button
+                (click)="previousMonth()"
+                class="p-2 sm:p-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 transition-colors duration-200">
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+              </button>
+              <button
+                (click)="nextMonth()"
+                class="p-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 transition-colors duration-200"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Días de la semana -->
+          <div class="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
+            <div
+              *ngFor="let day of daysOfWeek"
+              class="text-center font-semibold text-gray-700 py-2 text-sm">
+            >
+              <span class="hidden sm:inline">{{ day }}</span>
+              <span class="sm:hidden">{{ day.substring(0, 1) }}</span>
+            </div>
+          </div>
+
+          <!-- Días del calendario -->
+          <div class="grid grid-cols-7 gap-1 sm:gap-2">
+            <div
+              *ngFor="let day of calendarDays"
+              [ngClass]="{
+                'bg-gray-50': !day.isCurrentMonth,
+                'bg-gray-100 opacity-50': day.isCurrentMonth && !esDiaLaborable(day),
+                'relative': day.isCurrentMonth
+              }"
+              class="min-h-24 sm:min-h-28 lg:min-h-32 p-1 sm:p-2 lg:p-3 rounded-md sm:rounded-lg border border-gray-300 sm:border-2 sm:border-gray-200 transition-all duration-200 hover:shadow-md hover:border-red-300">
+            >
+              <!-- Indicador de día actual -->
+              <div
+                *ngIf="day.isToday"
+                class="absolute top-0 right-0 w-3 h-3 bg-red-700 rounded-full"
+              ></div>
+
+              <!-- Número del día -->
+              <p
+                [ngClass]="{
+                  'text-gray-400': !day.isCurrentMonth,
+                  'text-gray-500 line-through': day.isCurrentMonth && !esDiaLaborable(day),
+                  'font-bold text-gray-900': day.isCurrentMonth && !day.isToday && esDiaLaborable(day),
+                  'font-bold text-red-700': day.isToday
+                }"
+                class="mb-0.5 sm:mb-1 text-xs sm:text-sm font-bold"
+              >
+                {{ day.date }}
+              </p>
+
+              <!-- Horario del día - SOLO DESKTOP -->
+              <div *ngIf="day.isCurrentMonth" class="mb-0.5 sm:mb-1 hidden sm:block">
+                <p class="text-[10px] sm:text-xs leading-tight" [ngClass]="{
+                  'text-gray-400 italic': !esDiaLaborable(day),
+                  'text-gray-600 font-medium': esDiaLaborable(day)
+                }">
+                  {{ obtenerHorarioDelDia(day) }}
+                </p>
+              </div>
+
+              <!-- Eventos del día -->
+              <div class="space-y-0.5" *ngIf="esDiaLaborable(day)">
+                <div
+                  *ngFor="let event of day.events"
+                  [ngClass]="getEventColor(event.status)"
+                  class="px-1 py-0.5 sm:px-2 sm:py-1 rounded text-center sm:text-left border cursor-pointer hover:shadow-md transition-shadow duration-200"
+                  [title]="event.title + ' - ' + event.time"
+                >
+                  <!-- Móvil: solo hora -->
+                  <p class="sm:hidden text-[9px] font-bold leading-tight truncate">{{ event.time }}</p>
+                  <!-- Desktop: hora + título -->
+                  <div class="hidden sm:block">
+                    <p class="font-semibold truncate leading-tight text-xs">{{ event.time }}</p>
+                    <p class="truncate text-[10px] opacity-80 leading-tight">{{ event.title }}</p>
+                  </div>
+                </div>
+
+                <!-- Indicador de día sin eventos -->
+                <div
+                  *ngIf="day.isCurrentMonth && day.events.length === 0"
+                  class="text-[9px] sm:text-xs text-green-600 font-medium text-center sm:text-left"
+                >
+                  ✓
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leyenda -->
+          <div class="mt-6 pt-6 border-t border-gray-200 flex flex-wrap gap-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-4 h-4 bg-red-100 border-2 border-red-300 rounded"></div>
+              <span class="text-sm text-gray-700">Ocupado</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="w-4 h-4 bg-green-100 border-2 border-green-300 rounded"></div>
+              <span class="text-sm text-gray-700">Disponible</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="w-4 h-4 bg-gray-100 border-2 border-gray-300 rounded"></div>
+              <span class="text-sm text-gray-700">Día no laborable</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="w-3 h-3 bg-red-700 rounded-full"></div>
+              <span class="text-sm text-gray-700">Hoy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Lateral (Panel de Detalles) -->
+      <div class="lg:col-span-1">
+
+        <!-- Card: Detalles del Espacio Seleccionado -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden sticky top-6">
+
+          <!-- Header del Card -->
+          <div class="bg-gradient-to-r from-red-700 to-red-600 p-6 text-white">
+            <p class="text-xs uppercase tracking-wide mb-1 opacity-90">Sección</p>
+            <h3 class="text-xl font-bold mb-2">{{ selectedSpaceDetails.name }}</h3>
+            <div class="flex items-center space-x-2">
+              <div
+                [ngClass]="selectedSpaceDetails.status === 'Disponible' ? 'bg-green-400' : 'bg-red-400'"
+                class="w-3 h-3 rounded-full"
+              ></div>
+              <span class="text-sm font-semibold">{{ selectedSpaceDetails.status }}</span>
+            </div>
+          </div>
+
+          <!-- Cuerpo del Card -->
+          <div class="p-6 space-y-6">
+
+            <!-- Información General -->
+            <div class="space-y-4">
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Institución</p>
+                <p class="text-gray-900 font-semibold text-sm">{{ selectedSpaceDetails.institution }}</p>
+              </div>
+              
+              <div class="pb-4 border-b border-gray-200">
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Tipo</p>
+                <p class="text-gray-900 font-semibold">{{ selectedSpaceDetails.type }}</p>
+              </div>
+
+              <div class="pb-4 border-b border-gray-200">
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Capacidad</p>
+                <p class="text-gray-900 font-semibold">{{ selectedSpaceDetails.capacity }} personas</p>
+              </div>
+
+            </div>
+
+            <!-- Amenidades -->
+            <div>
+              <p class="text-xs font-semibold text-gray-500 uppercase mb-3">Amenidades</p>
+              @if (selectedSpaceDetails.amenities.length > 0) {
+                <div class="space-y-2">
+                  @for (amenity of selectedSpaceDetails.amenities; track $index) {
+                    <div class="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors duration-200">
+                      <svg class="w-4 h-4 text-red-700 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                      </svg>
+                      <span class="text-sm text-gray-700">{{ amenity }}</span>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="text-sm text-gray-500 italic">No hay amenidades registradas para esta sección</p>
+              }
+            </div>
+
+            <!-- Leyenda de Colores del Calendario -->
+            <div class="pt-4 border-t border-gray-200">
+              <p class="text-xs font-semibold text-gray-500 uppercase mb-3">Leyenda</p>
+              <div class="space-y-2">
+                <div class="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                  <div class="w-4 h-4 bg-red-100 border-2 border-red-300 rounded"></div>
+                  <span class="text-xs text-gray-700">Ocupado</span>
+                </div>
+                <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                  <div class="w-4 h-4 bg-green-100 border-2 border-green-300 rounded"></div>
+                  <span class="text-xs text-gray-700">Disponible</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="pt-4 border-t border-gray-200 space-y-2">
+              <button
+                (click)="openEditModal()"
+                class="w-full px-4 py-3 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors duration-200 flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                <span>Editar Disponibilidad</span>
+              </button>
+              <button 
+                (click)="verReservas()"
+                class="w-full px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span>Ver Reservas</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Editar Disponibilidad -->
+  <div
+    *ngIf="showEditModal"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+  >
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <!-- Header del Modal -->
+      <div class="bg-gradient-to-r from-red-700 to-red-600 p-6 text-white sticky top-0">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold">Editar Disponibilidad</h2>
+            <p class="text-sm text-red-100">{{ selectedSpace }}</p>
+          </div>
+          <button
+            (click)="closeEditModal()"
+            class="p-1 hover:bg-red-700 rounded-lg transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenido del Modal -->
+      <div class="p-6 space-y-6">
+
+        <!-- Seleccionar Fecha -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <svg class="w-4 h-4 inline mr-1 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Fecha *
+          </label>
+          <select
+            [(ngModel)]="editFormData.selectedDate"
+            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-red-700 focus:outline-none transition-colors"
+          >
+            <option value="">Selecciona una fecha</option>
+            <option *ngFor="let date of getAvailableDates()" [value]="date">
+              {{ date }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Hora Inicio -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <svg class="w-4 h-4 inline mr-1 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Hora de Inicio *
+          </label>
+          <select
+            [(ngModel)]="editFormData.startTime"
+            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-red-700 focus:outline-none transition-colors"
+          >
+            <option *ngFor="let hour of availableHours" [value]="hour">
+              {{ hour }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Hora Fin -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <svg class="w-4 h-4 inline mr-1 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Hora de Fin *
+          </label>
+          <select
+            [(ngModel)]="editFormData.endTime"
+            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-red-700 focus:outline-none transition-colors"
+          >
+            <option *ngFor="let hour of availableHours" [value]="hour">
+              {{ hour }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Estado -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <svg class="w-4 h-4 inline mr-1 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Estado *
+          </label>
+          <div class="space-y-2">
+            <button
+              (click)="toggleEventStatus()"
+              class="w-full px-4 py-3 border-2 rounded-lg transition-all duration-200"
+              [ngClass]="editFormData.status === 'occupied'
+                ? 'border-red-300 bg-red-50 text-red-700'
+                : 'border-green-300 bg-green-50 text-green-700'"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div
+                    [ngClass]="editFormData.status === 'occupied' ? 'bg-red-400' : 'bg-green-400'"
+                    class="w-4 h-4 rounded-full"
+                  ></div>
+                  <span class="font-semibold">
+                    {{ editFormData.status === 'occupied' ? 'Ocupado' : 'Disponible' }}
+                  </span>
+                </div>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Título (opcional) -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <svg class="w-4 h-4 inline mr-1 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Descripción (Opcional)
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="editFormData.title"
+            placeholder="ej: Conferencia, Reunión, Clase"
+            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-red-700 focus:outline-none transition-colors"
+          />
+          <p class="text-xs text-gray-500 mt-1">
+            Si no especificas, se usará el estado (Ocupado/Disponible)
+          </p>
+        </div>
+
+        <!-- Nota informativa -->
+        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p class="text-sm text-blue-800">
+            <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd"/>
+            </svg>
+            Los cambios se guardarán en el calendario.
+          </p>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="p-6 border-t border-gray-200 bg-gray-50 flex gap-2 sticky bottom-0">
+        <button
+          (click)="closeEditModal()"
+          class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors duration-200"
+        >
+          Cancelar
+        </button>
+        <button
+          (click)="saveAvailability()"
+          class="flex-1 px-4 py-3 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors duration-200 flex items-center justify-center space-x-2"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+          </svg>
+          <span>Guardar Cambios</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

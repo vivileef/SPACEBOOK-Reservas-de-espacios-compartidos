@@ -1,0 +1,207 @@
+<!-- Header/Navbar para la página principal -->
+<div class="navbar bg-base-100 shadow-sm">
+  <div class="flex-1">
+    <a class="btn btn-ghost text-xl" href="/">spacebook</a>
+  </div>
+  <div class="flex-none">
+    <button class="btn btn-square btn-ghost">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        class="inline-block h-5 w-5 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z">
+        </path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<main class="min-h-screen bg-white">
+  <!-- Hero Section with Static Image -->
+  <section class="relative w-full h-[550px] md:h-[650px] overflow-hidden">
+    <div class="absolute inset-0 grid md:grid-cols-[55%_45%]">
+      <!-- Left Side - Static Image -->
+      <div class="relative h-full overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=2086"
+          alt="Universidad - Reservación de espacios"
+          class="w-full h-full object-cover object-center"
+        />
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent via-60% via-black/30 to-white to-100%"></div>
+      </div>
+
+      <!-- Right Side - Hero Content -->
+      <div class="relative h-full flex items-center px-8 sm:px-12 lg:px-16 bg-white">
+        <div class="w-full space-y-8">
+          <div class="space-y-4">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.1]">
+              Reserva Espacios 
+              <span class="text-blue-600 block mt-2">en tu Universidad</span>
+            </h1>
+            <p class="text-lg text-gray-600 max-w-md leading-relaxed">
+              Gestiona y reserva salas, auditorios, laboratorios y espacios de estudio de manera fácil y rápida. Tu plataforma universitaria de reservaciones.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a routerLink="login">
+              <button  class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 min-w-[180px] justify-center">
+                Comenzar Ahora 
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Spaces Section with Image -->
+  <section class="relative w-full overflow-hidden py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-[55%_45%] gap-12 items-center">
+        <!-- Left Side - Static Image -->
+        <div class="relative h-[450px] md:h-[550px] overflow-hidden rounded-2xl">
+          <img
+            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069"
+            alt="Espacios de trabajo colaborativo"
+            class="w-full h-full object-cover object-center"
+          />
+          <!-- Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-l from-white via-transparent via-20% to-transparent"></div>
+        </div>
+
+        <!-- Right Side - Content -->
+        <div class="space-y-8">
+          <div class="space-y-5">
+            <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Espacios Disponibles</h2>
+            <p class="text-xl text-gray-600 leading-relaxed">
+              Encuentra el espacio perfecto para tu actividad
+            </p>
+            <p class="text-lg text-gray-600 leading-relaxed">
+              Accede a salas de conferencias, auditorios, laboratorios, espacios de coworking y áreas de estudio. 
+              Verifica disponibilidad en tiempo real, consulta características de cada espacio y reserva en segundos. 
+              Todo desde una única plataforma intuitiva y fácil de usar.
+            </p>
+          </div>
+          <a routerLink="login">
+            <button  class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 text-base">
+              Ver todos los espacios
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Bookings Section with Image -->
+  <section class="relative w-full overflow-hidden bg-gray-50 py-20 md:py-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-[45%_55%] gap-12 items-center">
+        <!-- Left Side - Content -->
+        <div class="space-y-8">
+          <div class="space-y-5">
+            <h2 class="text-4xl sm:text-5xl font-bold text-gray-900">Sistema de Reservas</h2>
+            <p class="text-xl text-gray-600 leading-relaxed">
+              Gestión simple y eficiente
+            </p>
+            <p class="text-lg text-gray-600 leading-relaxed">
+              Reserva con anticipación, recibe confirmaciones instantáneas y gestiona tus reservaciones desde un panel personalizado. 
+              Consulta historial, modifica reservas activas y recibe notificaciones automáticas. 
+              Sistema diseñado para facilitar la organización de actividades académicas y eventos.
+            </p>
+          </div>
+          <a routerLink="login">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 text-base">
+              Hacer una reserva
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </a>
+        </div>
+
+        <!-- Right Side - Static Image -->
+        <div class="relative h-[450px] md:h-[550px] overflow-hidden rounded-2xl">
+          <img
+            src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070"
+            alt="Gestión de reservas y calendario"
+            class="w-full h-full object-cover object-center"
+          />
+          <!-- Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-r from-white via-transparent via-20% to-transparent"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-24 sm:py-32">
+    <!-- Decorative background elements -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+    </div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      <div class="space-y-4">
+        <h2 class="text-3xl sm:text-5xl font-bold">Únete a SpaceBook</h2>
+        <p class="text-xl opacity-90 max-w-2xl mx-auto">
+          Miles de estudiantes y profesores ya están optimizando el uso de espacios universitarios
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a routerLink="login">
+          <button class="bg-white hover:bg-gray-100 text-blue-600 px-8 py-3 rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl flex items-center gap-2 text-base">
+            Crear Cuenta Gratis
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer para la página principal -->
+<footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10 mt-2">
+  <nav>
+    <h6 class="footer-title">Services</h6>
+    <a class="link link-hover">Branding</a>
+    <a class="link link-hover">Design</a>
+    <a class="link link-hover">Marketing</a>
+    <a class="link link-hover">Advertisement</a>
+  </nav>
+  <nav>
+    <h6 class="footer-title">Company</h6>
+    <a class="link link-hover">About us</a>
+    <a class="link link-hover">Contact</a>
+    <a class="link link-hover">Jobs</a>
+    <a class="link link-hover">Press kit</a>
+  </nav>
+  <nav>
+    <h6 class="footer-title">Legal</h6>
+    <a class="link link-hover">Terms of use</a>
+    <a class="link link-hover">Privacy policy</a>
+    <a class="link link-hover">Cookie policy</a>
+  </nav>
+  <form>
+    <h6 class="footer-title">Newsletter</h6>
+    <fieldset class="w-80">
+      <label>Enter your email address</label>
+      <div class="join">
+        <input
+          type="text"
+          placeholder="username@site.com"
+          class="input input-bordered join-item" />
+        <button class="btn btn-primary join-item">Subscribe</button>
+      </div>
+    </fieldset>
+  </form>
+</footer>
