@@ -1,167 +1,268 @@
-# SPACEBOOK — Reservas de espacios compartidos
+Aquí tienes el contenido que proporcionaste, organizado en formato Markdown para un archivo README:
 
-Este repositorio actúa como el repositorio central del proyecto "SPACEBOOK". Contiene la documentación, scripts e integración central, y referencia la interfaz de usuario como un submódulo Git (`frontend/`).
+```markdown
+# 🚀 SPACEBOOK — Reservas de espacios compartidos
 
-Resumen rápido
-- `frontend/` — submódulo que contiene la aplicación Angular (SpaceBook) en: `https://github.com/vivileef/Frontend.git`.
-- Este repo central contiene documentación del dominio, instrucciones de despliegue y utilidades de coordinación (CI, infra, scripts).
+[Repositorio central](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos) | [Documentación](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos/blob/main/README.md) | [CI](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos/actions) | [Integración](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos)
 
-## Arquitectura (resumen)
+Este repositorio actúa como el repo central del proyecto SPACEBOOK, encargado de:
 
-Breve visión general:
-- Frontend: SPA Angular (cliente) que consume Supabase (Auth + Postgres + Storage).
-- Backend: Supabase (gestiona la base de datos Postgres, autenticación y almacenamiento de archivos).
-- Comunicación: el frontend usa `@supabase/supabase-js` para interactuar con las tablas y con Storage.
+- Documentación del dominio y arquitectura.
+- Scripts SQL y guías para Supabase.
+- Integración general (CI/CD, despliegue, infraestructura).
+- Referenciar la aplicación Angular mediante submódulo Git (`frontend/`).
 
-## Tecnologías y dependencias (versiones exactas)
+La interfaz de usuario se encuentra en el submódulo:
+📁 `frontend/` → [Frontend GitHub](https://github.com/vivileef/Frontend.git)
 
-**Frontend (espacio: `Frontend/spacebook`)**
-- Angular core: `^20.0.0`
-- @angular/cli: `^20.0.5`
-- TypeScript: `~5.8.2`
-- RxJS: `~7.8.0`
-- Zone.js: `~0.15.0`
-- Supabase JS client: `@supabase/supabase-js@^2.81.1`
-- Tailwind CSS: `^4.1.17`
-- DaisyUI: `^5.5.0` (dev)
-- PostCSS / Autoprefixer: `postcss@^8.5.6`, `autoprefixer@^10.4.22`
+## 📌 Resumen del proyecto
 
-**Tooling (repositorio `Frontend` root)**
-- Tailwind + DaisyUI devDependencies en `Frontend/package.json`:
-  - `daisyui@^5.4.7`
-  - `tailwindcss@^4.1.17`
+SPACEBOOK es una plataforma para reservar espacios compartidos en instituciones, como salas de estudio, áreas comunes, gimnasios, laboratorios o auditorios.
 
-**Recomendaciones de entorno**
-- Node.js: 18.x o 20.x (compatibilidad con Angular 20 y toolchain moderno). Usa la misma versión en CI.
-- npm: >= 9 (o `pnpm`/`yarn` según preferencia, actualizar scripts si se usan).
+- **Frontend**: SPA Angular con Tailwind y DaisyUI.
+- **Backend**: Supabase (Postgres + Auth + Storage).
+- **Deploy**: Google Cloud (Firebase Hosting / Cloud Run + Supabase).
 
-## Modelo de datos (ER)
+## 🏗️ Arquitectura (Resumen)
 
+### Frontend (Angular)
+
+- Gestiona reservas, usuarios, calendarios y visualización de espacios.
+- Consume Supabase mediante `@supabase/supabase-js`.
+- UI moderna y responsiva con Tailwind + DaisyUI.
+
+### Backend (Supabase)
+
+- Base de datos Postgres.
+- Autenticación.
+- Reglas RLS.
+- Storage para imágenes de espacios / instituciones.
+
+### Comunicación
+
+Cliente Angular ↔ Supabase REST / RPC / Storage.
+
+## 🧩 Tecnologías y dependencias (versiones exactas)
+
+### Frontend (submódulo Frontend/spacebook)
+
+| Componente          | Versión        |
+|---------------------|----------------|
+| Angular             | ^20.0.0       |
+| @angular/cli        | ^20.0.5       |
+| TypeScript          | ~5.8.2        |
+| RxJS                | ~7.8.0        |
+| Zone.js             | ~0.15.0       |
+| Supabase JS         | @supabase/supabase-js@^2.81.1 |
+| Tailwind CSS        | ^4.1.17       |
+| DaisyUI             | ^5.5.0        |
+| PostCSS             | ^8.5.6        |
+| Autoprefixer        | ^10.4.22      |
+
+### Requerimientos de entorno
+
+- Node.js: 18.x o 20.x
+- npm: ≥ 9
+- (Opcional) pnpm o yarn
+
+## 🗃️ Modelo de Datos (ER)
 
 ```mermaid
 erDiagram
-	INSTITUCION {
-		string institucionid PK
-		string nombre
-		string direccion
-	}
-	SECCION {
-		string seccionid PK
-		string nombre
-		string institucionid FK
-	}
-	ESPACIO {
-		string espacioid PK
-		string nombre
-		string seccionid FK
-		boolean estado
-		int capacidad
-	}
-	ESPACIOHORA {
-		string espaciohoraid PK
-		string espacioid FK
-		time horainicio
-		time horafin
-		boolean estado
-		string reservaid FK NULL
-	}
-	RESERVA {
-		string reservaid PK
-		string usuarioid FK
-		string nombrereserva
-		timestamp fechareserva
-	}
-	USUARIO {
-		string usuarioid PK
-		string nombre
-		string correo
-	}
-	COMENTARIO {
-		string comentarioid PK
-		string espacioid FK
-		string usuarioid FK
-		text contenido
-		timestamp creado_en
-	}
-	INCIDENCIA {
-		string incidenciaid PK
-		string espacioid FK
-		string usuarioid FK
-		text descripcion
-		timestamp creado_en
-	}
-	NOTIFICACION {
-		string notificacionid PK
-		string usuarioid FK
-		text mensaje
-		boolean leido
-	}
+    INSTITUCION {
+        string institucionid PK
+        string nombre
+        string direccion
+    }
+    SECCION {
+        string seccionid PK
+        string nombre
+        string institucionid FK
+    }
+    ESPACIO {
+        string espacioid PK
+        string nombre
+        string seccionid FK
+        boolean estado
+        int capacidad
+    }
+    ESPACIOHORA {
+        string espaciohoraid PK
+        string espacioid FK
+        time horainicio
+        time horafin
+        boolean estado
+        string reservaid FK NULL
+    }
+    RESERVA {
+        string reservaid PK
+        string usuarioid FK
+        string nombrereserva
+        timestamp fechareserva
+    }
+    USUARIO {
+        string usuarioid PK
+        string nombre
+        string correo
+    }
+    COMENTARIO {
+        string comentarioid PK
+        string espacioid FK
+        string usuarioid FK
+        text contenido
+        timestamp creado_en
+    }
+    INCIDENCIA {
+        string incidenciaid PK
+        string espacioid FK
+        string usuarioid FK
+        text descripcion
+        timestamp creado_en
+    }
+    NOTIFICACION {
+        string notificacionid PK
+        string usuarioid FK
+        text mensaje
+        boolean leido
+    }
 
-	INSTITUCION ||--o{ SECCION : "tiene"
-	SECCION ||--o{ ESPACIO : "contiene"
-	ESPACIO ||--o{ ESPACIOHORA : "tiene"
-	ESPACIOHORA }o--|| ESPACIO : "pertenece a"
-	USUARIO ||--o{ RESERVA : "crea"
-	RESERVA ||--o{ ESPACIOHORA : "incluye"
-	ESPACIO ||--o{ COMENTARIO : "recibe"
-	USUARIO ||--o{ COMENTARIO : "escribe"
-	ESPACIO ||--o{ INCIDENCIA : "puede tener"
-	USUARIO ||--o{ INCIDENCIA : "reporta"
-	USUARIO ||--o{ NOTIFICACION : "recibe"
-
+    INSTITUCION ||--o{ SECCION : "tiene"
+    SECCION ||--o{ ESPACIO : "contiene"
+    ESPACIO ||--o{ ESPACIOHORA : "tiene"
+    USUARIO ||--o{ RESERVA : "crea"
+    RESERVA ||--o{ ESPACIOHORA : "incluye"
+    ESPACIO ||--o{ COMENTARIO : "recibe"
+    USUARIO ||--o{ COMENTARIO : "escribe"
+    ESPACIO ||--o{ INCIDENCIA : "puede tener"
+    USUARIO ||--o{ INCIDENCIA : "reporta"
+    USUARIO ||--o{ NOTIFICACION : "recibe"
 ```
 
-> Nota: este ER es una representación simplificada. Adecuar constraints, tipos y migraciones en el proyecto Supabase real.
+## 🗄️ Supabase: SQL y scripts
 
+Dentro del submódulo `Frontend/spacebook` encontrarás archivos clave:
 
-## Supabase: scripts y SQL
+- 📄 `SUPABASE_ADMINISTRADOR_SETUP.sql`
+- 📄 `SUPABASE_USUARIOS_SETUP.sql`
+- 📘 `CONFIGURACION_RAPIDA_ROLES.md`
 
-En el submódulo `frontend/spacebook` encontrarás archivos SQL de ejemplo y guías:
+Estos scripts permiten:
 
-- `Frontend/spacebook/SUPABASE_ADMINISTRADOR_SETUP.sql` — (scripts de ejemplo para setup de administrador)
-- `Frontend/spacebook/SUPABASE_USUARIOS_SETUP.sql` — (scripts de ejemplo para datos/usuarios)
-- `Frontend/spacebook/CONFIGURACION_RAPIDA_ROLES.md` — guía rápida de roles y RLS
+- Crear tablas iniciales.
+- Configurar autenticación.
+- Asignar permisos y RLS.
 
-Usa esos scripts en el panel SQL de Supabase para crear tablas iniciales durante desarrollo.
+Se ejecutan desde el panel SQL de Supabase.
 
-## Desarrollo local
+## 💻 Desarrollo local
 
-1. Clona el repo padre e inicializa submódulos:
+### 1️⃣ Clonar y traer submódulos
 
-```powershell
+```bash
 git clone https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos.git
 cd SPACEBOOK-Reservas-de-espacios-compartidos
 git submodule update --init --recursive
 ```
 
-2. Entra al submódulo frontend e instala dependencias:
+### 2️⃣ Instalar dependencias del frontend
 
-```powershell
+```bash
 cd frontend
 npm install
 npx ng serve --open
 ```
 
-Esto arranca la app Angular en `http://localhost:4200`.
+**App disponible en:**  
+👉 [http://localhost:4200](http://localhost:4200)
 
-## Buenas prácticas con el submódulo
+## 🔄 Buenas prácticas con el submódulo
 
-- Siempre realiza cambios en el repo `Frontend` (no editar los archivos dentro del submódulo desde el repo padre).
-- Para actualizar la referencia en el padre: dentro de `frontend` haz `git pull` y luego en la raíz del repo padre `git add frontend && git commit -m "Update frontend submodule"`.
+✓ Nunca editar archivos del frontend desde el repo padre.  
+✓ Realizar cambios directamente en [Frontend GitHub](https://github.com/vivileef/Frontend).  
+✓ Para actualizar la referencia:
 
-## CI / Despliegue (sugerencias rápidas)
+```bash
+cd frontend
+git pull
+cd ..
+git add frontend
+git commit -m "Update frontend submodule"
+```
 
-- CI: usa GitHub Actions en el repo `Frontend` para construir y publicar artefactos (por ejemplo build estático, E2E, tests).
-- Despliegue: puedes desplegar build a cualquier hosting estático (Netlify, Vercel) y dejar Supabase como backend.
+## ☁️ Despliegue en Google Cloud (usado en este proyecto)
 
-## Contribuir
+SPACEBOOK se despliega en Google Cloud bajo el modelo:
 
-- Para cambios del frontend: clona `https://github.com/vivileef/Frontend.git`, crea rama, haz PR y coordina merge.
-- Para documentación o scripts globales: crea PRs en este repo padre.
+- **Frontend Angular** → Google Cloud Hosting (Firebase Hosting o Cloud Storage + Load Balancer).
+- **Backend** → Supabase (persistente, no hosteado en GCP).
 
-## Contacto
+### 🚀 Opción recomendada: Firebase Hosting (Google Cloud)
 
-- Maintainer: vivileef
+1. **Instalar Firebase CLI**
+   ```bash
+   npm install -g firebase-tools
+   firebase login
+   ```
 
----
-Actualizado: 2025-11-24
+2. **Inicializar hosting en el submódulo frontend**
+   ```bash
+   cd frontend/spacebook
+   firebase init hosting
+   ```
+   Configurar:
+   - Use existing project (si ya está creado en Google Cloud).
+   - Public directory → `dist/spacebook/browser`
+   - SPA → Yes
+
+3. **Build Angular**
+   ```bash
+   ng build
+   ```
+
+4. **Deploy**
+   ```bash
+   firebase deploy
+   ```
+
+**Resultado:**
+
+- ✔ App pública en `https://<proyecto>.web.app`
+- ✔ CDN global de Google
+- ✔ HTTPS automático
+- ✔ Caché optimizada para SPA
+
+## 🧪 CI / CD (Sugerencias)
+
+**GitHub Actions para Angular:**
+
+```bash
+npm ci
+ng lint
+ng test --watch=false --browsers=ChromeHeadless
+ng build --configuration=production
+```
+
+**Deploy automático a Firebase Hosting mediante:**
+```bash
+firebase deploy --only hosting
+```
+
+## 🤝 Contribuir
+
+### Para frontend
+
+- Repositorio: [Frontend GitHub](https://github.com/vivileef/Frontend)
+- Crear rama
+- Hacer cambios
+- PR → revisión → merge
+
+### Para documentación del repo central
+
+Abrir un Pull Request con la actualización requerida.
+
+## 📅 Última actualización
+
+24 de noviembre de 2025
+```
+
+
