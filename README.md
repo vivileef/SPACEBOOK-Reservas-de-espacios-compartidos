@@ -2,8 +2,6 @@
 ```markdown
 # 🚀 SPACEBOOK — Reservas de espacios compartidos
 
-[Repositorio central](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos) | [Documentación](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos/blob/main/README.md) | [CI](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos/actions) | [Integración](https://github.com/vivileef/SPACEBOOK-Reservas-de-espacios-compartidos)
-
 Este repositorio actúa como el repo central del proyecto SPACEBOOK, encargado de:
 
 - Documentación del dominio y arquitectura.
@@ -170,9 +168,6 @@ cd frontend
 npm install
 npx ng serve --open
 ```
-
-**App disponible en:**  
-👉 [http://localhost:4200](http://localhost:4200)
 
 ## 🔄 Buenas prácticas con el submódulo
 
