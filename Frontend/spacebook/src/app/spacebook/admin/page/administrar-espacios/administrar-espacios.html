@@ -2,26 +2,28 @@
   <div class="max-w-7xl mx-auto">
     
     <!-- Header Principal -->
-    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">🏢 Administrar Espacios</h1>
-      <p class="text-gray-600">Gestiona instituciones, secciones y espacios</p>
+    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+      <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">🏢 Administrar Espacios</h1>
+      <p class="text-sm sm:text-base text-gray-600">Gestiona instituciones, secciones y espacios</p>
     </div>
 
     <!-- Pestañas Principales -->
-    <div class="bg-white rounded-xl shadow-md mb-6">
+    <div class="bg-white rounded-xl shadow-md mb-4 sm:mb-6">
       <div class="border-b border-gray-200">
         <nav class="flex -mb-px">
           <button
             (click)="cambiarPestana('instituciones')"
             [class]="pestanaActiva() === 'instituciones' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-            class="w-1/2 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors">
-            🏛️ Gestionar Instituciones
+            class="w-1/2 py-3 sm:py-4 px-2 sm:px-6 text-center border-b-2 font-medium text-xs sm:text-sm transition-colors">
+            <span class="hidden sm:inline">🏛️ Gestionar Instituciones</span>
+            <span class="sm:hidden">🏛️ Instituciones</span>
           </button>
           <button
             (click)="cambiarPestana('espacios-secciones')"
             [class]="pestanaActiva() === 'espacios-secciones' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-            class="w-1/2 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors">
-            📦 Gestionar Espacios y Secciones
+            class="w-1/2 py-3 sm:py-4 px-2 sm:px-6 text-center border-b-2 font-medium text-xs sm:text-sm transition-colors">
+            <span class="hidden sm:inline">📦 Gestionar Espacios y Secciones</span>
+            <span class="sm:hidden">📦 Espacios</span>
           </button>
         </nav>
       </div>
@@ -48,12 +50,12 @@
 
     <!-- PESTAÑA 1: GESTIONAR INSTITUCIONES -->
     @if (pestanaActiva() === 'instituciones' && !cargando()) {
-      <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold text-gray-900">Instituciones</h2>
+      <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900">Instituciones</h2>
           <button
             (click)="abrirModalInstitucion('crear')"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2">
+            class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -134,9 +136,9 @@
       
       <!-- Vista: Seleccionar Institución -->
       @if (vistaSecundaria() === 'instituciones') {
-        <div class="bg-white rounded-xl shadow-md p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Selecciona una Institución</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Selecciona una Institución</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
             @for (inst of instituciones(); track inst.institucionid) {
               <div
                 (click)="seleccionarInstitucionParaSecciones(inst)"
@@ -164,8 +166,8 @@
 
       <!-- Vista: Secciones de la Institución -->
       @if (vistaSecundaria() === 'secciones') {
-        <div class="bg-white rounded-xl shadow-md p-6">
-          <div class="flex items-center gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
             <button
               (click)="volverAInstitucionesSecundaria()"
               class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
@@ -174,11 +176,11 @@
               </svg>
             </button>
             <div class="flex-1">
-              <h2 class="text-xl font-bold text-gray-900">Secciones - {{ institucionSeleccionada()?.nombre }}</h2>
+              <h2 class="text-lg sm:text-xl font-bold text-gray-900">Secciones - {{ institucionSeleccionada()?.nombre }}</h2>
             </div>
             <button
               (click)="abrirModalSeccion('crear')"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-2">
+              class="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
@@ -265,8 +267,8 @@
 
       <!-- Vista: Espacios de la Sección -->
       @if (vistaSecundaria() === 'espacios') {
-        <div class="bg-white rounded-xl shadow-md p-6">
-          <div class="flex items-center gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow-md p-4 sm:p-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
             <button
               (click)="volverASecciones()"
               class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
@@ -275,12 +277,12 @@
               </svg>
             </button>
             <div class="flex-1">
-              <h2 class="text-xl font-bold text-gray-900">Espacios - {{ seccionSeleccionada()?.nombre }}</h2>
-              <p class="text-sm text-gray-600">{{ institucionSeleccionada()?.nombre }}</p>
+              <h2 class="text-lg sm:text-xl font-bold text-gray-900">Espacios - {{ seccionSeleccionada()?.nombre }}</h2>
+              <p class="text-xs sm:text-sm text-gray-600">{{ institucionSeleccionada()?.nombre }}</p>
             </div>
             <button
               (click)="abrirModalEspacio('crear')"
-              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center gap-2">
+              class="w-full sm:w-auto px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
@@ -288,7 +290,8 @@
             </button>
           </div>
 
-          <div class="overflow-x-auto">
+          <!-- Desktop table view -->
+          <div class="hidden lg:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
@@ -346,6 +349,51 @@
                 }
               </tbody>
             </table>
+          </div>
+
+          <!-- Mobile card view -->
+          <div class="lg:hidden space-y-3">
+            @for (esp of espacios(); track esp.espacioid) {
+              <div class="border border-gray-200 rounded-lg p-4 space-y-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="font-semibold text-gray-900">{{ esp.nombre }}</p>
+                    <p class="text-sm text-gray-600 mt-1">Límite: {{ esp.horalimite || 60 }} min</p>
+                  </div>
+                  <span [class]="'px-2 py-1 text-xs font-semibold rounded-full ' + obtenerEstadoClase(esp.estado)">
+                    {{ obtenerEstadoTexto(esp.estado) }}
+                  </span>
+                </div>
+                <div class="flex gap-2">
+                  <button
+                    (click)="abrirModalEspacioHora(esp)"
+                    class="flex-1 px-3 py-2 bg-purple-50 text-purple-600 rounded-lg text-sm font-medium flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Bloques
+                  </button>
+                  <button
+                    (click)="abrirModalEspacio('editar', esp)"
+                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </button>
+                  <button
+                    (click)="eliminarEspacio(esp)"
+                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            } @empty {
+              <div class="text-center py-8 text-gray-500 border border-gray-200 rounded-lg">
+                No hay espacios en esta sección
+              </div>
+            }
           </div>
         </div>
       }
@@ -922,7 +970,7 @@
                 <p class="text-sm text-gray-400 mt-2">Verifica que la institución tenga un horario configurado</p>
               </div>
             } @else {
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 @for (eh of espaciosHora(); track eh.espaciohoraid) {
                   <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                     <div class="flex items-center justify-between mb-2">
@@ -984,54 +1032,58 @@
           }
         </div>
         
-        <div class="bg-gray-50 px-6 py-4 flex justify-between items-center gap-3 rounded-b-2xl border-t">
-          <div class="flex gap-3">
+        <div class="bg-gray-50 px-3 sm:px-6 py-3 sm:py-4 rounded-b-2xl border-t">
+          <div class="flex flex-wrap gap-2 sm:gap-3">
             <button
               (click)="crearNuevoEspacioHora()"
               [disabled]="cargandoEspacioHora()"
-              class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="px-3 sm:px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-xs sm:text-sm"
               title="Crea un bloque adicional en el siguiente horario disponible">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
-              Crear Bloque
+              <span class="hidden sm:inline">Crear Bloque</span>
+              <span class="sm:hidden">Crear</span>
             </button>
             <button
               (click)="abrirModalRenombrarGlobal()"
               [disabled]="cargandoEspacioHora()"
-              class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="px-3 sm:px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-xs sm:text-sm"
               title="Renombra todos los bloques de este espacio">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
               </svg>
-              Renombrar Todo
+              <span class="hidden sm:inline">Renombrar Todo</span>
+              <span class="sm:hidden">Renombrar</span>
             </button>
             <button
               (click)="regenerarEspaciosHora(espacioSeleccionadoHora()!)"
               [disabled]="cargandoEspacioHora()"
-              class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="px-3 sm:px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-xs sm:text-sm"
               title="Regenera los bloques sin reserva, mantiene los que tienen reserva activa">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
               </svg>
-              Regenerar Bloques
+              <span class="hidden lg:inline">Regenerar Bloques</span>
+              <span class="lg:hidden">Regenerar</span>
             </button>
             <button
               (click)="regenerarTodoEspaciosHora(espacioSeleccionadoHora()!)"
               [disabled]="cargandoEspacioHora()"
-              class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="px-3 sm:px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-xs sm:text-sm"
               title="⚠️ Elimina TODOS los bloques (incluso con reserva) y los regenera desde cero">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
               </svg>
-              Regenerar Todo
+              <span class="hidden lg:inline">Regenerar Todo</span>
+              <span class="lg:hidden">Todo</span>
             </button>
-          </div>
-          <button
-            (click)="cerrarModalEspacioHora()"
-            class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">
+            <button
+              (click)="cerrarModalEspacioHora()"
+              class="ml-auto px-3 sm:px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors text-xs sm:text-sm">
             Cerrar
           </button>
+          </div>
         </div>
       </div>
     </div>

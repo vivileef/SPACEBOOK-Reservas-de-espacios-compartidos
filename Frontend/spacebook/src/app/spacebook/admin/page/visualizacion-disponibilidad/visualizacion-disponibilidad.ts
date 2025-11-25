@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../../../../shared/services/supabase.service';
 import { ActivityLogService } from '../../../../shared/services/activity-log.service';
@@ -74,6 +75,7 @@ interface CalendarEvent {
 export class VisualizacionDisponibilidadComponent implements OnInit {
   private supabase: SupabaseClient;
   private activityLog = inject(ActivityLogService);
+  private router = inject(Router);
 
   // Datos de contexto
   selectedInstitution = '';
@@ -699,5 +701,9 @@ export class VisualizacionDisponibilidadComponent implements OnInit {
       .filter(d => d.isCurrentMonth)
       .map(d => `${String(d.date).padStart(2, '0')}/${String(d.month + 1).padStart(2, '0')}/${d.year}`)
       .slice(0, 31);
+  }
+
+  verReservas(): void {
+    this.router.navigate(['/admin-dashboard/reservas']);
   }
 }

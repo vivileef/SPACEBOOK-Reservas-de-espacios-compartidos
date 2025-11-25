@@ -8,9 +8,28 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
   template: `
-    <div class="min-h-screen bg-gray-100 flex">
-      <!-- Sidebar - Fixed -->
-      <aside class="w-64 bg-red-700 text-white flex flex-col fixed left-0 top-0 h-screen z-10">
+    <div class="min-h-screen bg-gray-100">
+      <!-- Mobile Menu Button -->
+      <button 
+        (click)="toggleSidebar()"
+        class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-red-700 text-white rounded-lg shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- Overlay for mobile -->
+      @if (sidebarOpen()) {
+        <div 
+          (click)="toggleSidebar()"
+          class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30">
+        </div>
+      }
+
+      <!-- Sidebar -->
+      <aside [class]="'bg-red-700 text-white flex flex-col fixed left-0 top-0 h-screen z-40 transition-transform duration-300 ' + 
+        'w-64 ' +
+        (sidebarOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0')">
         <!-- Logo -->
         <div class="p-6 border-b border-red-600 flex-shrink-0">
           <div class="flex items-center space-x-3">
@@ -32,7 +51,8 @@ import { CommonModule } from '@angular/common';
             routerLink="/admin-dashboard"
             routerLinkActive="bg-red-600"
             [routerLinkActiveOptions]="{exact: true}"
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+            (click)="closeSidebarOnMobile()"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -43,7 +63,8 @@ import { CommonModule } from '@angular/common';
           <a
             routerLink="/admin-dashboard/calendario"
             routerLinkActive="bg-red-600"
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+            (click)="closeSidebarOnMobile()"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -54,7 +75,8 @@ import { CommonModule } from '@angular/common';
           <a
             routerLink="/admin-dashboard/administrar-espacios"
             routerLinkActive="bg-red-600"
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+            (click)="closeSidebarOnMobile()"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -65,7 +87,8 @@ import { CommonModule } from '@angular/common';
           <a
             routerLink="/admin-dashboard/visualizacion-disponibilidad"
             routerLinkActive="bg-red-600"
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+            (click)="closeSidebarOnMobile()"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -76,12 +99,25 @@ import { CommonModule } from '@angular/common';
           <a
             routerLink="/admin-dashboard/incidencias"
             routerLinkActive="bg-red-600"
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
+            (click)="closeSidebarOnMobile()"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
             <span class="font-medium">Incidencias</span>
+          </a>
+
+          <a
+            routerLink="/admin-dashboard/reservas"
+            routerLinkActive="bg-red-600"
+            (click)="closeSidebarOnMobile()"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+            <span class="font-medium">Ver Reservas</span>
           </a>
         </nav>
 
@@ -111,12 +147,12 @@ import { CommonModule } from '@angular/common';
       </aside>
 
       <!-- Main Content -->
-      <div class="flex-1 flex flex-col ml-64">
+      <div class="flex-1 flex flex-col lg:ml-64">
         <!-- Top Header -->
         <header class="bg-white shadow-sm">
-          <div class="px-8 py-4">
-            <h1 class="text-2xl font-bold text-gray-900">Panel de Administración</h1>
-            <p class="text-sm text-gray-500">Sistema de Gestión de Estacionamiento</p>
+          <div class="px-4 sm:px-6 lg:px-8 py-4">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 ml-12 lg:ml-0">Panel de Administración</h1>
+            <p class="text-xs sm:text-sm text-gray-500 ml-12 lg:ml-0">Sistema de Gestión de Estacionamiento</p>
           </div>
         </header>
 
@@ -135,6 +171,18 @@ export class AdminDashboardComponent implements OnInit {
 
   userProfile = this.auth.profile;
   cargando = signal(false);
+  sidebarOpen = signal(false);
+
+  toggleSidebar() {
+    this.sidebarOpen.update(v => !v);
+  }
+
+  closeSidebarOnMobile() {
+    // Close sidebar on mobile after navigation
+    if (window.innerWidth < 1024) {
+      this.sidebarOpen.set(false);
+    }
+  }
 
   async ngOnInit() {
     console.log('AdminDashboard: Iniciando, perfil actual:', this.auth.profile());

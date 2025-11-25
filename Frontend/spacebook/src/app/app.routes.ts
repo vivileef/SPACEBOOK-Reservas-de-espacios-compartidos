@@ -16,6 +16,7 @@ import { MisReservasComponent } from './spacebook/user/page/mis-reservas/mis-res
 import { ComentariosComponent } from './spacebook/user/page/comentarios/comentarios';
 import { IncidenciasComponent } from './spacebook/user/page/incidencias/incidencias';
 import { GestionarIncidenciasComponent } from './spacebook/admin/page/gestionar-incidencias/gestionar-incidencias';
+import { GestionarReservasComponent } from './spacebook/admin/page/gestionar-reservas/gestionar-reservas';
 import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
 
@@ -56,6 +57,10 @@ export const routes: Routes = [
             {
                 path: 'incidencias',
                 component: GestionarIncidenciasComponent
+            },
+            {
+                path: 'reservas',
+                component: GestionarReservasComponent
             }
         ]
     },

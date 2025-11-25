@@ -2,9 +2,9 @@
   <div class="max-w-7xl mx-auto">
     
     <!-- Header -->
-    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">📅 Calendario de Disponibilidad</h1>
-      <p class="text-gray-600">Gestiona los horarios de atención por institución</p>
+    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+      <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">📅 Calendario de Disponibilidad</h1>
+      <p class="text-sm sm:text-base text-gray-600">Gestiona los horarios de atención por institución</p>
     </div>
 
     <!-- Mensajes -->
@@ -21,15 +21,15 @@
     }
 
     <!-- Botón de Gestión de Horarios -->
-    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg p-6 mb-6">
-      <div class="flex items-center justify-between">
+    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
         <div class="text-white">
-          <h2 class="text-xl font-bold mb-1">🕒 Gestión de Horarios</h2>
-          <p class="text-purple-100 text-sm">Crea y administra horarios reutilizables para tus instituciones</p>
+          <h2 class="text-lg sm:text-xl font-bold mb-1">🕒 Gestión de Horarios</h2>
+          <p class="text-purple-100 text-xs sm:text-sm">Crea y administra horarios reutilizables para tus instituciones</p>
         </div>
         <button
           (click)="cambiarVista(vistaActiva() === 'horarios' ? 'instituciones' : 'horarios')"
-          class="px-6 py-3 bg-white text-purple-600 font-semibold rounded-lg hover:bg-purple-50 transition-all shadow-md flex items-center gap-2">
+          class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-white text-purple-600 font-semibold rounded-lg hover:bg-purple-50 transition-all shadow-md flex items-center justify-center gap-2 text-sm sm:text-base">
           @if (vistaActiva() === 'horarios') {
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -47,15 +47,15 @@
 
     <!-- Vista de Gestión de Horarios -->
     @if (vistaActiva() === 'horarios') {
-      <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <div class="flex justify-between items-center mb-6">
+      <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
           <div>
-            <h2 class="text-2xl font-bold text-gray-900">📋 Lista de Horarios</h2>
-            <p class="text-gray-600 text-sm mt-1">{{ todosLosHorarios().length }} horarios disponibles</p>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">📋 Lista de Horarios</h2>
+            <p class="text-gray-600 text-xs sm:text-sm mt-1">{{ todosLosHorarios().length }} horarios disponibles</p>
           </div>
           <button
             (click)="abrirModalHorarioIndependiente('crear')"
-            class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2 shadow-md">
+            class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md text-sm sm:text-base">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
             </svg>
@@ -224,39 +224,40 @@
           </div>
 
           <!-- Grid del Calendario -->
-          <div class="grid grid-cols-7 gap-2">
+          <div class="grid grid-cols-7 gap-1.5 sm:gap-2">
             <!-- Encabezados de días -->
             @for (dia of diasSemana; track dia) {
-              <div class="text-center font-semibold text-gray-700 p-2">
-                {{ dia }}
+              <div class="text-center font-semibold text-gray-700 py-2 text-sm">
+                <span class="hidden sm:inline">{{ dia }}</span>
+                <span class="sm:hidden">{{ dia.substring(0, 1) }}</span>
               </div>
             }
             
             <!-- Días del mes -->
             @for (diaCalendario of diasCalendario(); track $index) {
               <div
-                [class]="'aspect-square p-2 border rounded-lg transition-all ' + 
+                [class]="'min-h-20 sm:min-h-24 lg:min-h-28 p-1.5 sm:p-2 border rounded-lg transition-all ' + 
                   (diaCalendario.esMesActual ? 'bg-white border-gray-300' : 'bg-gray-50 border-gray-200') + ' ' +
                   (esDiaLaboral(diaCalendario.fecha) && diaCalendario.esMesActual ? 'bg-green-50 border-green-300' : '') + ' ' +
                   (!diaCalendario.esMesActual ? 'opacity-50' : '')">
-                <div class="flex flex-col h-full">
-                  <span [class]="'text-sm font-medium ' + 
+                <div class="flex flex-col h-full justify-between">
+                  <span [class]="'text-sm font-semibold ' + 
                     (diaCalendario.esMesActual ? 'text-gray-900' : 'text-gray-400')">
                     {{ diaCalendario.dia }}
                   </span>
                   
                   @if (esDiaLaboral(diaCalendario.fecha) && diaCalendario.esMesActual) {
                     <div class="mt-auto">
-                      <div class="text-xs text-green-700 font-medium">
+                      <div class="text-[10px] sm:text-xs text-green-700 font-medium leading-tight">
                         Abierto
                       </div>
-                      <div class="text-xs text-green-600">
+                      <div class="text-[9px] sm:text-xs text-green-600 leading-tight mt-0.5">
                         {{ formatearHora(horarioActual()!.horainicio) }} - {{ formatearHora(horarioActual()!.horafin) }}
                       </div>
                     </div>
                   } @else if (diaCalendario.esMesActual) {
                     <div class="mt-auto">
-                      <div class="text-xs text-gray-500">
+                      <div class="text-[10px] sm:text-xs text-gray-500 leading-tight">
                         Cerrado
                       </div>
                     </div>
