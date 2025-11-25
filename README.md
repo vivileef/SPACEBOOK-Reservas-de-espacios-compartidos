@@ -1,4 +1,3 @@
-Aquí tienes el contenido que proporcionaste, organizado en formato Markdown para un archivo README:
 
 ```markdown
 # 🚀 SPACEBOOK — Reservas de espacios compartidos
