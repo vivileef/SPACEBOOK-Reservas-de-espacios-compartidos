@@ -29,7 +29,8 @@ export class Login {
     try {
         const res: any = await this.auth.signIn(this.loginForm.value.email!, this.loginForm.value.password!);
         if (res?.error) {
-          this.errorMessage.set(res.error.message || 'Error al iniciar sesión');
+          // Mensaje genérico por seguridad - no revelar si existe el usuario
+          this.errorMessage.set('Usuario o contraseña incorrectos');
       } else {
         // Inicio de sesión correcto; redirigir según el rol
         if (this.auth.isAdmin()) {
@@ -41,7 +42,7 @@ export class Login {
         }
       }
     } catch (e: any) {
-      this.errorMessage.set(e?.message || 'Error al iniciar sesión');
+      this.errorMessage.set('Usuario o contraseña incorrectos');
     } finally {
       this.isSubmitting.set(false);
     }

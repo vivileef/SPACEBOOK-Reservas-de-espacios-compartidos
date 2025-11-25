@@ -53,12 +53,12 @@ export class MisReservasComponent implements OnInit {
       const pasadas: ReservaDetallada[] = [];
 
       for (const reserva of reservas) {
-        const fechaFin = reserva.fecha_fin ? new Date(reserva.fecha_fin) : null;
+        const fechaReserva = new Date(reserva.fechareserva);
         
         // Cargar detalles del espacio si existe reservaid
         let detalleReserva: ReservaDetallada = { ...reserva };
         
-        if (fechaFin && fechaFin >= ahora) {
+        if (fechaReserva >= ahora) {
           activas.push(detalleReserva);
         } else {
           pasadas.push(detalleReserva);
@@ -88,7 +88,7 @@ export class MisReservasComponent implements OnInit {
       if (usuarioId) {
         await this.dbService.createNotificacion({
           fechanotificacion: new Date().toISOString(),
-          descripcion: `Tu reserva del ${this.formatearFecha(reserva.fecha_inicio)} ha sido cancelada.`,
+          descripcion: `Tu reserva "${reserva.nombrereserva}" del ${this.formatearFecha(reserva.fechareserva)} ha sido cancelada.`,
           usuarioid: usuarioId
         });
       }
@@ -129,13 +129,10 @@ export class MisReservasComponent implements OnInit {
 
   obtenerEstadoReserva(reserva: Reserva): string {
     const ahora = new Date();
-    const fechaInicio = new Date(reserva.fecha_inicio);
-    const fechaFin = reserva.fecha_fin ? new Date(reserva.fecha_fin) : null;
+    const fechaReserva = new Date(reserva.fechareserva);
 
-    if (fechaFin && fechaFin < ahora) {
+    if (fechaReserva < ahora) {
       return 'Completada';
-    } else if (fechaInicio <= ahora && fechaFin && fechaFin >= ahora) {
-      return 'En curso';
     } else {
       return 'Próxima';
     }
@@ -145,21 +142,20 @@ export class MisReservasComponent implements OnInit {
     const estado = this.obtenerEstadoReserva(reserva);
     switch (estado) {
       case 'Completada': return 'bg-gray-100 text-gray-800';
-      case 'En curso': return 'bg-green-100 text-green-800';
       case 'Próxima': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   }
 
   puedeCalificar(reserva: Reserva): boolean {
-    const fechaFin = reserva.fecha_fin ? new Date(reserva.fecha_fin) : null;
-    return fechaFin !== null && fechaFin < new Date();
+    const fechaReserva = new Date(reserva.fechareserva);
+    return fechaReserva < new Date();
   }
 
   puedeCancelar(reserva: Reserva): boolean {
-    const fechaInicio = new Date(reserva.fecha_inicio);
+    const fechaReserva = new Date(reserva.fechareserva);
     // Solo se puede cancelar si falta más de 1 hora para el inicio
-    const unaHoraAntes = new Date(fechaInicio.getTime() - 60 * 60 * 1000);
+    const unaHoraAntes = new Date(fechaReserva.getTime() - 60 * 60 * 1000);
     return new Date() < unaHoraAntes;
   }
 }

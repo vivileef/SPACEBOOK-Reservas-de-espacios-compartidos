@@ -148,6 +148,68 @@ export class CalendarioDisponibilidad implements OnInit {
   ngOnInit() {
     this.cargarInstituciones();
     this.cargarTodosLosHorarios();
+    this.liberarBloquesVencidos();
+  }
+
+  // ==================== LIBERACIÓN AUTOMÁTICA ====================
+  async liberarBloquesVencidos() {
+    try {
+      const ahora = new Date();
+      const fechaHoy = ahora.toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+      const horaActual = ahora.toTimeString().split(' ')[0]; // Hora actual en formato HH:MM:SS
+
+      // Obtener todos los espaciohora que están ocupados manualmente (sin reservaid)
+      const { data: bloquesOcupados, error } = await this.supabase
+        .from('espaciohora')
+        .select('espaciohoraid, horainicio, horafin, espacioid')
+        .eq('estado', false)
+        .is('reservaid', null);
+
+      if (error) throw error;
+
+      if (!bloquesOcupados || bloquesOcupados.length === 0) return;
+
+      // Filtrar bloques cuya hora ya pasó
+      const bloquesALiberar = bloquesOcupados.filter(bloque => {
+        // Comparar solo horas (asumiendo que todos están en el mismo día o son recurrentes)
+        return bloque.horafin < horaActual;
+      });
+
+      if (bloquesALiberar.length === 0) return;
+
+      // Liberar los bloques
+      const promesas = bloquesALiberar.map(bloque => {
+        return this.supabase
+          .from('espaciohora')
+          .update({ estado: true })
+          .eq('espaciohoraid', bloque.espaciohoraid);
+      });
+
+      await Promise.all(promesas);
+
+      // Actualizar estados de espacios si todos sus bloques están disponibles
+      const espaciosAfectados = [...new Set(bloquesALiberar.map(b => b.espacioid))];
+      
+      for (const espacioid of espaciosAfectados) {
+        const { data: todosLosBloques } = await this.supabase
+          .from('espaciohora')
+          .select('estado')
+          .eq('espacioid', espacioid);
+
+        const todosDisponibles = todosLosBloques?.every(b => b.estado === true);
+
+        if (todosDisponibles) {
+          await this.supabase
+            .from('espacio')
+            .update({ estado: true })
+            .eq('espacioid', espacioid);
+        }
+      }
+
+      console.log(`Liberados ${bloquesALiberar.length} bloques que ya pasaron su horario`);
+    } catch (err) {
+      console.error('Error al liberar bloques vencidos:', err);
+    }
   }
 
   // ==================== CARGA DE DATOS ====================

@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { Auth } from '../../../../shared/services/auth.service';
 import { DatabaseService } from '../../../../shared/services/database.service';
 import { ActivityLogService, ActividadLog } from '../../../../shared/services/activity-log.service';
+import { SupabaseService } from '../../../../shared/services/supabase.service';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 interface ActividadReciente {
   id: string;
@@ -199,6 +201,7 @@ export class AdminHome implements OnInit {
   private auth = inject(Auth);
   private dbService = inject(DatabaseService);
   activityLogService = inject(ActivityLogService);
+  private supabase: SupabaseClient;
   
   userProfile = this.auth.profile;
   
@@ -214,6 +217,9 @@ export class AdminHome implements OnInit {
   actividadesAdmin = signal<ActividadLog[]>([]);
 
   constructor() {
+    const supabaseService = inject(SupabaseService);
+    this.supabase = supabaseService.getClient();
+    
     // Efecto para actualizar actividades cuando cambien
     effect(() => {
       const actividades = this.activityLogService.actividades();
@@ -279,24 +285,39 @@ export class AdminHome implements OnInit {
       this.disponibles.set(disponiblesCount);
       this.ocupados.set(espacios.length - disponiblesCount);
 
-      const reservas = await this.dbService.getReservas();
+      // Obtener fechas del día actual
       const hoy = new Date();
       hoy.setHours(0, 0, 0, 0);
       const manana = new Date(hoy);
       manana.setDate(manana.getDate() + 1);
 
-      const reservasHoyCount = reservas.filter(r => {
-        const fechaReserva = new Date(r.fecha_inicio);
-        return fechaReserva >= hoy && fechaReserva < manana;
-      }).length;
-      this.reservasHoy.set(reservasHoyCount);
+      // Consulta directa de reservas de hoy usando Supabase
+      const { data: reservasHoy, error: errorReservas } = await this.supabase
+        .from('reserva')
+        .select('*')
+        .gte('fechareserva', hoy.toISOString())
+        .lt('fechareserva', manana.toISOString());
 
-      const incidencias = await this.dbService.getIncidencias();
-      const incidenciasHoyCount = incidencias.filter(i => {
-        const fechaIncidencia = new Date(i.fechaIncidencia);
-        return fechaIncidencia >= hoy && fechaIncidencia < manana;
-      }).length;
-      this.incidenciasHoy.set(incidenciasHoyCount);
+      if (errorReservas) {
+        console.error('Error cargando reservas de hoy:', errorReservas);
+        this.reservasHoy.set(0);
+      } else {
+        this.reservasHoy.set(reservasHoy?.length || 0);
+      }
+
+      // Consulta directa de incidencias de hoy usando Supabase
+      const { data: incidenciasHoy, error: errorIncidencias } = await this.supabase
+        .from('incidencia')
+        .select('*')
+        .gte('fechaIncidencia', hoy.toISOString())
+        .lt('fechaIncidencia', manana.toISOString());
+
+      if (errorIncidencias) {
+        console.error('Error cargando incidencias de hoy:', errorIncidencias);
+        this.incidenciasHoy.set(0);
+      } else {
+        this.incidenciasHoy.set(incidenciasHoy?.length || 0);
+      }
 
     } catch (error) {
       console.error('Error cargando estadísticas:', error);
@@ -311,7 +332,7 @@ export class AdminHome implements OnInit {
       // Últimas reservas
       const reservas = await this.dbService.getReservas();
       const ultimasReservas = reservas
-        .sort((a, b) => new Date(b.fecha_inicio).getTime() - new Date(a.fecha_inicio).getTime())
+        .sort((a, b) => new Date(b.fechareserva).getTime() - new Date(a.fechareserva).getTime())
         .slice(0, 3);
 
       for (const reserva of ultimasReservas) {
@@ -320,7 +341,7 @@ export class AdminHome implements OnInit {
           tipo: 'reserva',
           titulo: 'Nueva reserva confirmada',
           descripcion: `Reserva confirmada`,
-          tiempo: this.calcularTiempo(reserva.fecha_inicio),
+          tiempo: this.calcularTiempo(reserva.fechareserva),
           icono: 'check',
           color: 'bg-green-100'
         });

@@ -11,10 +11,10 @@ import { VisualizacionDisponibilidadComponent } from './spacebook/admin/page/vis
 import { UserHome } from './spacebook/user/page/user-home/user-home';
 import { CatalogoEspacios } from './spacebook/user/page/catalogo-espacios/catalogo-espacios';
 import { SistemaReservas } from './spacebook/user/page/sistema-reservas/sistema-reservas';
+import { NotificacionesComponent } from './spacebook/user/page/notificaciones/notificaciones';
 import { MisReservasComponent } from './spacebook/user/page/mis-reservas/mis-reservas';
 import { ComentariosComponent } from './spacebook/user/page/comentarios/comentarios';
 import { IncidenciasComponent } from './spacebook/user/page/incidencias/incidencias';
-import { NotificacionesComponent } from './spacebook/user/page/notificaciones/notificaciones';
 import { GestionarIncidenciasComponent } from './spacebook/admin/page/gestionar-incidencias/gestionar-incidencias';
 import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
@@ -75,6 +75,10 @@ export const routes: Routes = [
             {
                 path: 'sistema-reservas',
                 component: SistemaReservas
+            },
+            {
+                path: 'notificaciones',
+                component: NotificacionesComponent
             },
             {
                 path: 'mis-reservas',

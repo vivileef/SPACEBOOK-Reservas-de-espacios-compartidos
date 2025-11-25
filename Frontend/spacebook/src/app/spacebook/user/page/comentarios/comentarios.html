@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 py-4 sm:py-8">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Calificar Reserva</h1>
-      <p class="mt-2 text-gray-600">Comparte tu experiencia y ayuda a otros usuarios</p>
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Calificar Reserva</h1>
+      <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Comparte tu experiencia y ayuda a otros usuarios</p>
     </div>
 
     <!-- Success Message -->
@@ -27,7 +27,7 @@
 
     <!-- Form -->
     @if (!exito()) {
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white rounded-lg shadow p-4 sm:p-6">
         <!-- Star Rating -->
         <div class="mb-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -77,10 +77,8 @@
           <div class="mb-6 p-4 bg-gray-50 rounded-lg">
             <h3 class="text-sm font-medium text-gray-700 mb-2">Información de la Reserva</h3>
             <div class="text-sm text-gray-600">
-              <p><strong>Fecha:</strong> {{ formatearFecha(reserva()!.fecha_inicio) }}</p>
-              @if (reserva()!.costo !== undefined) {
-                <p><strong>Costo:</strong> ${{ formatearCosto(reserva()!.costo) }}</p>
-              }
+              <p><strong>Fecha:</strong> {{ formatearFecha(reserva()!.fechareserva) }}</p>
+              <p><strong>Reserva:</strong> {{ reserva()!.nombrereserva }}</p>
             </div>
           </div>
         }

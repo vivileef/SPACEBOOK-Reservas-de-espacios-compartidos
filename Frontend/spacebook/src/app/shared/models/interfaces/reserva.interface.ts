@@ -2,16 +2,14 @@
 export interface Reserva {
   reservaid: string;
   usuarioid?: string;
-  fecha_inicio: string;
-  fecha_fin?: string;
-  costo?: number;
+  nombrereserva?: string;
+  fechareserva: string;
 }
 
 export interface CreateReservaDTO {
   usuarioid?: string;
-  fecha_inicio: string;
-  fecha_fin?: string;
-  costo?: number;
+  nombrereserva?: string;
+  fechareserva: string;
 }
 
 export interface UpdateReservaDTO extends Partial<CreateReservaDTO> {
