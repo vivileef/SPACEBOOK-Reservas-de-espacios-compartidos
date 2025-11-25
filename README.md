@@ -88,7 +88,7 @@ erDiagram
         time horainicio
         time horafin
         boolean estado
-        string reservaid FK NULL
+        string reservaid FK
     }
     RESERVA {
         string reservaid PK
@@ -132,6 +132,7 @@ erDiagram
     ESPACIO ||--o{ INCIDENCIA : "puede tener"
     USUARIO ||--o{ INCIDENCIA : "reporta"
     USUARIO ||--o{ NOTIFICACION : "recibe"
+
 ```
 
 ## 🗄️ Supabase: SQL y scripts
