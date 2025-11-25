@@ -114,36 +114,6 @@ erDiagram
 
 > Nota: este ER es una representación simplificada. Adecuar constraints, tipos y migraciones en el proyecto Supabase real.
 
-## Flujo del sistema (diagrama de alto nivel)
-
-```mermaid
-flowchart LR
-  U[Usuario (web)] -->|Login / Navega| FE[Frontend (Angular)]
-  FE -->|API calls| SB[Supabase Client (@supabase/supabase-js)]
-  SB -->|Auth check| Auth[Supabase Auth]
-  SB -->|Queries| PG[(Postgres DB)]
-  SB -->|Files| Storage[Supabase Storage]
-  PG -->|pub/sub| Notif[Notificaciones]
-  FE -->|Web UI| U
-
-  subgraph ReservaFlow
-	FE -->|Buscar espacios| PG
-	FE -->|Reservar horario| SB
-	SB -->|Crea reserva| PG
-	SB -->|Almacena meta| Storage
-	PG -->|Generar notificación| Notif
-  end
-
-```
-
-## Variables de entorno y configuración
-
-El frontend necesita las variables del proyecto Supabase (configurar en `environment` o `.env` según el flujo):
-
-- `VITE_SUPABASE_URL` — URL del proyecto Supabase
-- `VITE_SUPABASE_ANON_KEY` — clave pública anónima
-
-No exponer claves de servicio (`service_role`) en el cliente. Para tareas que requieren permisos elevados, usar funciones/endpoints protegidos.
 
 ## Supabase: scripts y SQL
 
